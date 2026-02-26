@@ -72,3 +72,30 @@ The system is designed to be transparent, auditable, and practical for SME envir
 ## Status
 
 🚧 MVP in active development  
+
+
+## Development
+
+### Prerequisites
+- Node.js 18+ (recommended: latest LTS)
+- npm (or pnpm)
+
+### Run locally
+
+
+
+```bash
+First, run the development server:
+npm install
+
+## Scripts
+
+- `npm run dev` – Start the development server  
+- `npm run build` – Create a production build  
+- `npm run start` – Start the production server  
+- `npm run lint` – Run lint checks  
+
+```
+
+Open [http://localhost:3000] with your browser to see the result.
+
