@@ -443,7 +443,7 @@ export default function ResultsPage() {
         <Container>
           <Card title="No assessment found">
             <p className="text-sm text-zinc-600">
-              We couldn&apos;t find a submitted assessment. Complete a new assessment to generate your insurability score.
+              We couldn&apos;t find a submitted assessment. Complete a new assessment to generate your AI Governance Score.
             </p>
             <div className="mt-4">
               <Link href="/assessment" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
@@ -502,7 +502,7 @@ export default function ResultsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-zinc-900">RiskPilot AI</h1>
-              <p className="text-sm text-zinc-500">AI Insurability Evidence Pack</p>
+              <p className="text-sm text-zinc-500">AI Governance Evidence Pack</p>
             </div>
             <div className="text-right text-sm text-zinc-500">
               <p>Generated: {formatDate()}</p>
@@ -520,7 +520,7 @@ export default function ResultsPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-zinc-900 print:text-2xl">
-                  Insurability Assessment
+                  AI Governance Assessment
                 </h1>
                 <p className="text-zinc-500 mt-1">
                   {fd.companyName || "Your firm"} • {fd.systemName || "AI System"}
@@ -566,7 +566,7 @@ export default function ResultsPage() {
                       <Shield className="h-10 w-10 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm text-blue-100 font-medium">RiskPilot Insurability Score</p>
+                      <p className="text-sm text-blue-100 font-medium">RiskPilot AI Governance Score</p>
                       <div className="flex items-baseline gap-2">
                         <span className="text-5xl font-bold">{r.riskScore}</span>
                         <span className="text-blue-200 text-lg">/100</span>
@@ -635,7 +635,7 @@ export default function ResultsPage() {
               <div className="lg:col-span-2 space-y-6">
 
                 {/* Score breakdown */}
-                <Card title="Insurability Score Breakdown" icon={<BarChart3 className="h-5 w-5 text-blue-600" />}>
+                <Card title="AI Governance Score Breakdown" icon={<BarChart3 className="h-5 w-5 text-blue-600" />}>
                   <div className="space-y-4">
                     {r.categoryScores.map((cat) => (
                       <div key={cat.name} className="print-section">
@@ -939,7 +939,7 @@ export default function ResultsPage() {
 
             {/* Print footer */}
             <div className="hidden print:block mt-10 pt-6 border-t border-zinc-200 text-xs text-zinc-400 text-center">
-              <p>RiskPilot AI — AI Insurability Assessment</p>
+              <p>RiskPilot AI — AI Governance Assessment</p>
               <p className="mt-1">This assessment is indicative only. Final insurance terms are subject to insurer underwriting. © {new Date().getFullYear()} RiskPilot AI.</p>
             </div>
 

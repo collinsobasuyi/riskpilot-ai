@@ -1,182 +1,184 @@
 // app/page.tsx
-
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
   CheckCircle2,
-  Calendar,
-  Award,
-  MessageCircle,
-  ChevronRight,
   Shield,
   TrendingUp,
   FileCheck,
   AlertTriangle,
-  AlertCircle,
   Scale,
+  ChevronRight,
+  BarChart3,
+  Lock,
+  Eye,
+  Clock,
 } from "lucide-react";
 import Container from "../components/layout/Container";
 import ButtonLink from "../components/ui/ButtonLink";
 
+// ─── Contact form ─────────────────────────────────────────────────────────────
+
+function ContactForm() {
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: "", firm: "", email: "", message: "" });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // In production: POST to an API route or Formspree/Resend
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 border border-blue-100">
+          <CheckCircle2 className="h-7 w-7 text-blue-700" />
+        </div>
+        <h3 className="text-lg font-semibold text-slate-900">Request received</h3>
+        <p className="mt-2 text-sm text-slate-500 max-w-xs">
+          Thank you. We will be in touch within one business day to confirm your call.
+        </p>
+        <button
+          onClick={() => { setSubmitted(false); setForm({ name: "", firm: "", email: "", message: "" }); }}
+          className="mt-6 text-sm text-blue-700 hover:text-blue-800 font-medium"
+        >
+          Submit another request
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
+            Full name <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+            placeholder="Jane Smith"
+            className="w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
+            Firm <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            type="text"
+            value={form.firm}
+            onChange={(e) => setForm((p) => ({ ...p, firm: e.target.value }))}
+            placeholder="Acme Financial Ltd"
+            className="w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
+          />
+        </div>
+      </div>
+      <div>
+        <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
+          Work email <span className="text-red-500">*</span>
+        </label>
+        <input
+          required
+          type="email"
+          value={form.email}
+          onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+          placeholder="jane@acmefinancial.com"
+          className="w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
+        />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
+          What would you like to discuss?
+        </label>
+        <textarea
+          rows={3}
+          value={form.message}
+          onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+          placeholder="e.g. Preparing for PI renewal, AI governance review, specific use case..."
+          className="w-full resize-none rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full rounded-sm bg-blue-700 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition-colors shadow-sm"
+      >
+        Request a consultation
+      </button>
+      <p className="text-center text-xs text-slate-400">
+        Free • 30 minutes • No obligation
+      </p>
+    </form>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function Home() {
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-zinc-50 to-white">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-20 left-1/4 h-72 w-72 rounded-full bg-blue-500/5 blur-3xl" />
-          <div className="absolute bottom-20 right-1/4 h-72 w-72 rounded-full bg-purple-500/5 blur-3xl" />
-        </div>
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <section className="bg-slate-900 pt-28 pb-24">
+        <Container>
+          <div className="mx-auto max-w-4xl">
 
-        <Container className="pt-16 pb-24">
-          <div className="mx-auto max-w-4xl text-center">
-            {/* Niche identity badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-1.5 text-sm shadow-sm">
-              <Award className="h-4 w-4 text-blue-600" />
-              <span className="font-medium text-zinc-900">
-                AI Insurability • FCA Regulated • Financial Services
-              </span>
+            {/* Eyebrow */}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium tracking-widest text-slate-300 uppercase">
+              <Shield className="h-3.5 w-3.5 text-blue-400" />
+              AI Governance Readiness — UK Regulated Firms
             </div>
 
-            <h1 className="text-5xl font-bold tracking-tight text-zinc-900 sm:text-6xl md:text-7xl">
-              Check Your AI Insurability
-              <span className="mt-2 block text-blue-600">Before Your Next Renewal</span>
+            <h1 className="text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl md:text-7xl">
+              Know Where Your AI
+              <span className="block text-blue-400">Governance Stands.</span>
             </h1>
 
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-zinc-600">
-              As FCA-regulated firms deploy AI agents in credit, underwriting, and fraud detection,
-              liability gaps emerge. Get your{" "}
-              <span className="font-semibold text-zinc-900">Insurability Score</span> and evidence
-              pack aligned with PRA expectations.
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
+              Regulated firms are adopting AI faster than they can evidence control, oversight, and
+              accountability. RiskPilot gives you a structured governance assessment and the evidence
+              pack your compliance team, board, and insurers need.
             </p>
 
-            {/* CTAs */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <ButtonLink href="/assessment" variant="primary" className="group">
-                Get Your Insurability Score
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </ButtonLink>
-
-              <ButtonLink href="#book" variant="secondary">
-                <Calendar className="mr-2 h-4 w-4" />
-                Book a free consultation
-              </ButtonLink>
-            </div>
-
-            {/* Trust signals */}
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-zinc-500">
-              {[
-                "FCA/PRA aligned",
-                "Designed for London Market",
-                "10-minute assessment",
-                "No commitment",
-              ].map((t) => (
-                <div key={t} className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  <span>{t}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* The AI Liability Shift Section */}
-      <section
-        id="liability"
-        className="scroll-mt-24 py-16 bg-gradient-to-r from-amber-50 to-orange-50 border-y border-amber-200"
-      >
-        <Container>
-          <div className="max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800 mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <span>The AI Liability Shift Is Happening Now</span>
-            </div>
-
-            <h2 className="text-2xl font-bold text-zinc-900 sm:text-3xl">
-              Regulators Are Shifting Responsibility
-            </h2>
-
-            <p className="mt-4 text-lg text-zinc-700">
-              Financial regulators are making it clear:{" "}
-              <span className="font-semibold">if your AI system causes harm, your firm is responsible.</span>{" "}
-              Not the model provider. Not the vendor. Your organisation.
-            </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {[
-                {
-                  q: "How is your AI monitored?",
-                  note: "Insurers now require continuous oversight evidence",
-                },
-                {
-                  q: "Who approves AI decisions?",
-                  note: "Accountability chains must be documented",
-                },
-                {
-                  q: "Can the system be audited?",
-                  note: "Full audit trails are non-negotiable",
-                },
-                {
-                  q: "What happens if the model fails?",
-                  note: "Incident response plans must be tested",
-                },
-              ].map((item) => (
-                <div
-                  key={item.q}
-                  className="bg-white/80 backdrop-blur p-4 rounded-lg border border-amber-200"
-                >
-                  <p className="font-medium text-zinc-900">{item.q}</p>
-                  <p className="text-sm text-zinc-600 mt-1">{item.note}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-800 flex items-start gap-2">
-                <AlertTriangle className="h-5 w-5 flex-shrink-0" />
-                <span>
-                  <span className="font-bold">Without answers,</span> firms risk coverage exclusions,
-                  higher premiums, or being unable to secure AI liability insurance at all.
-                </span>
-              </p>
-            </div>
-
-            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3">
-              <ButtonLink href="/assessment" variant="primary" className="group">
-                Run the 10-minute assessment
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </ButtonLink>
-              <Link href="#book" className="text-sm font-medium text-blue-600 hover:text-blue-700">
-                Or discuss your renewal
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <Link
+                href="/assessment"
+                className="inline-flex items-center gap-2 rounded-sm bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition-colors shadow-sm"
+              >
+                Get Your Governance Score
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/#book"
+                className="inline-flex items-center gap-2 rounded-sm border border-slate-600 bg-transparent px-6 py-3 text-sm font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors"
+              >
+                Book a consultation
               </Link>
             </div>
-          </div>
-        </Container>
-      </section>
 
-      {/* The Problem Section */}
-      <section id="problem" className="scroll-mt-24 py-16 bg-white">
-        <Container>
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-zinc-900 sm:text-3xl">
-              The £1M Question for Financial Firms
-            </h2>
-            <p className="mt-4 text-lg text-zinc-600">
-              Your D&O and PI insurers are starting to ask:
+            <p className="mt-4 text-sm text-slate-500">
+              Used for PI renewal preparation, FCA compliance reviews, board AI sign-off, and internal risk assurance.
             </p>
-            <div className="mt-8 grid gap-4 text-left sm:grid-cols-2">
+
+            {/* Trust bar */}
+            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-slate-700/60 pt-8 text-xs font-medium tracking-wide text-slate-500 uppercase">
               {[
-                "If your credit AI discriminates, are you covered?",
-                "If your trading agent hallucinates, who pays?",
-                "If your underwriting model fails FCA principles, is it excluded?",
-                "If your fraud detection misses, is it negligence?",
-              ].map((q) => (
-                <div key={q} className="flex items-start gap-3 p-4 bg-zinc-50 rounded-lg">
-                  <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-zinc-700">{q}</p>
+                "FCA / PRA aligned",
+                "Compliance, Risk & Insurance ready",
+                "10-minute assessment",
+                "Evidence-grade output",
+                "No commitment",
+              ].map((t) => (
+                <div key={t} className="flex items-center gap-1.5">
+                  <div className="h-1 w-1 rounded-full bg-blue-600" />
+                  {t}
                 </div>
               ))}
             </div>
@@ -184,388 +186,531 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="scroll-mt-24 py-24 bg-zinc-50">
+      {/* ── Market signal bar ─────────────────────────────────────── */}
+      <div className="border-b border-slate-200 bg-slate-50">
         <Container>
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-              From Assessment to Insurability
+          <div className="grid divide-y sm:divide-y-0 sm:divide-x divide-slate-200 sm:grid-cols-3 text-center">
+            {[
+              { stat: "SS1/23", label: "PRA model risk management standard — effective now" },
+              { stat: "Consumer Duty", label: "FCA accountability for AI-driven consumer outcomes" },
+              { stat: "Renewal", label: "Insurers increasingly asking for AI governance evidence" },
+            ].map((item) => (
+              <div key={item.stat} className="px-6 py-5">
+                <p className="text-sm font-bold text-slate-900">{item.stat}</p>
+                <p className="mt-0.5 text-xs text-slate-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </div>
+
+      {/* ── The Problem ───────────────────────────────────────────── */}
+      <section id="problem" className="scroll-mt-20 py-24 bg-white">
+        <Container>
+          <div className="grid gap-16 lg:grid-cols-2 items-start">
+
+            {/* Left — statement */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
+                The Problem
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl leading-tight">
+                Your insurers are asking questions your team cannot yet answer.
+              </h2>
+              <p className="mt-5 text-base text-slate-600 leading-relaxed">
+                D&amp;O and PI underwriters are adding AI declarations to renewal questionnaires. Firms
+                that lack documented governance, audit trails, and oversight evidence face exclusions,
+                premium loadings, or uninsurable AI exposure.
+              </p>
+              <p className="mt-4 text-base text-slate-600 leading-relaxed">
+                The regulatory direction is clear. FCA Consumer Duty places accountability for
+                AI-driven consumer outcomes directly on the firm. PRA SS1/23 mandates model risk
+                management. The liability sits with your organisation — not the model provider.
+              </p>
+
+              <div className="mt-8 p-4 bg-amber-50 border-l-4 border-amber-500">
+                <p className="text-sm font-medium text-amber-900">
+                  Without documented governance, firms risk coverage exclusions, higher premiums,
+                  or being uninsurable for specific AI use cases entirely.
+                </p>
+              </div>
+
+              <div className="mt-8">
+                <Link
+                  href="/assessment"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
+                >
+                  Run the 10-minute assessment
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right — questions */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">
+                Questions underwriters are now asking
+              </p>
+              <div className="space-y-3">
+                {[
+                  {
+                    q: "If your credit AI discriminates, are you covered?",
+                    note: "Consumer Duty places fair outcome responsibility on the firm.",
+                  },
+                  {
+                    q: "If your trading agent hallucinates, who pays?",
+                    note: "Generative AI errors in execution are not covered by default.",
+                  },
+                  {
+                    q: "If your underwriting model fails FCA principles, is it excluded?",
+                    note: "Model explainability and oversight are now underwriting criteria.",
+                  },
+                  {
+                    q: "If your fraud detection misses, is it negligence?",
+                    note: "AML failures linked to AI models face increasing regulatory scrutiny.",
+                  },
+                  {
+                    q: "Can you demonstrate your AI was operating within approved parameters?",
+                    note: "Audit trails and change management records required for claims.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.q}
+                    className="rounded-sm border border-slate-200 bg-slate-50 p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">{item.q}</p>
+                        <p className="mt-1 text-xs text-slate-500">{item.note}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── How It Works ──────────────────────────────────────────── */}
+      <section id="how-it-works" className="scroll-mt-20 py-24 bg-slate-50 border-y border-slate-200">
+        <Container>
+          <div className="text-center mb-16">
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
+              How It Works
+            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              From assessment to evidence pack in three steps.
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-zinc-600">
-              A clear path to proving your AI systems are safe to insure.
+            <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
+              Designed for compliance teams and technical leads who need something they can
+              put in front of their broker.
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
+          <div className="relative grid gap-8 md:grid-cols-3">
+            {/* Connector line */}
+            <div className="absolute top-8 left-1/6 right-1/6 hidden h-px bg-slate-300 md:block" style={{ left: "18%", right: "18%" }} />
+
             {[
               {
-                step: "1",
-                title: "Free Insurability Assessment",
-                body:
-                  "Complete a 10-minute assessment. Get your Insurability Score (0-100) and gap analysis against FCA/PRA expectations.",
-                linkHref: "/assessment",
-                linkText: "Start assessment",
+                step: "01",
+                title: "Free Governance Assessment",
+                body: "Complete a structured 10-minute assessment covering your AI system, governance controls, data handling, and oversight mechanisms.",
+                cta: "Start assessment",
+                href: "/assessment",
               },
               {
-                step: "2",
-                title: "Results Review",
-                body:
-                  "We review your score together. If below 70, we identify exactly what insurers will ask for at renewal.",
-                linkHref: "#book",
-                linkText: "Book free review",
+                step: "02",
+                title: "Scored Results & Gap Analysis",
+                body: "Receive your AI Governance Score (0–100) with a breakdown by category, identified risk drivers, and a ranked list of remediation actions.",
+                cta: "See example output",
+                href: "/#score",
               },
               {
-                step: "3",
-                title: "Evidence Pack & Certification",
-                body:
-                  "Get a documented evidence pack to share with insurers. Achieve 'RiskPilot Certified' status for better terms.",
-                linkHref: "#book",
-                linkText: "Discuss certification",
+                step: "03",
+                title: "Evidence Pack for Underwriters",
+                body: "Download a formatted evidence document to share with your broker or compliance team. Book a review call to discuss the findings.",
+                cta: "Book a call",
+                href: "/#book",
               },
             ].map((item) => (
-              <div key={item.step} className="relative">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-xl font-bold text-white">
+              <div key={item.step} className="relative bg-white border border-slate-200 rounded-sm p-6">
+                <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-sm bg-blue-700 text-xs font-bold text-white">
                   {item.step}
                 </div>
-                <h3 className="mt-4 text-xl font-bold text-zinc-900">{item.title}</h3>
-                <p className="mt-2 text-zinc-600">{item.body}</p>
-                <div className="mt-4">
-                  <Link
-                    href={item.linkHref}
-                    className="inline-flex items-center font-medium text-blue-600 hover:text-blue-700"
-                  >
-                    {item.linkText}
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Link>
-                </div>
+                <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
+                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{item.body}</p>
+                <Link
+                  href={item.href}
+                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
+                >
+                  {item.cta}
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
               </div>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* Founder Credibility Section */}
-      <section id="credibility" className="scroll-mt-24 py-16 bg-white">
+      {/* ── Score Preview ─────────────────────────────────────────── */}
+      <section id="score" className="scroll-mt-20 py-24 bg-white">
         <Container>
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center gap-8">
-              <div className="md:w-1/3 flex justify-center">
-                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white text-4xl font-bold shadow-xl">
-                  ⚡
-                </div>
-              </div>
-              <div className="md:w-2/3">
-                <h2 className="text-2xl font-bold text-zinc-900 sm:text-3xl mb-2">
-                  Built by Someone Who Understands the London Market
-                </h2>
-                <p className="text-lg text-zinc-600">
-                  RiskPilot was created by a professional with experience working in regulated
-                  financial environments and the London insurance market.
-                </p>
-                <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                  {["AI governance practices", "Model risk management", "Insurance underwriting"].map(
-                    (item) => (
-                      <div key={item} className="flex items-center gap-2 text-sm text-zinc-700">
-                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                        <span>{item}</span>
-                      </div>
-                    )
-                  )}
-                </div>
-                <p className="mt-4 text-sm text-zinc-500 italic">
-                  The framework combines all three to evaluate AI systems the way insurers actually
-                  think about risk.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
+          <div className="grid items-start gap-16 lg:grid-cols-2">
 
-      {/* Insurability Score Preview */}
-      <section id="score" className="scroll-mt-24 bg-zinc-50 py-24">
-        <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left — description */}
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-                Your Insurability Score in 10 Minutes
+              <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
+                The Output
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl leading-tight">
+                A score your compliance team, board, and broker can act on.
               </h2>
+              <p className="mt-5 text-base text-slate-600 leading-relaxed">
+                The AI Governance Score is calculated against the specific factors regulators,
+                auditors, and insurers evaluate — decision authority, oversight maturity,
+                auditability, and regulatory alignment. One assessment, useful across
+                multiple governance conversations.
+              </p>
 
-              <div className="mt-8 space-y-6">
+              <div className="mt-8 space-y-5">
                 {[
                   {
-                    icon: <Shield className="h-5 w-5 text-blue-600" />,
-                    title: "Insurance-Ready Assessment",
-                    body:
-                      "Mapped to what Lloyd's syndicates and London Market insurers actually ask for at renewal.",
+                    icon: <BarChart3 className="h-5 w-5" />,
+                    title: "Five scored dimensions",
+                    body: "Governance, Model Risk, Auditability, Human Oversight, and Operational Monitoring — each rated and explained.",
                   },
                   {
-                    icon: <Scale className="h-5 w-5 text-blue-600" />,
-                    title: "FCA & PRA Alignment",
-                    body:
-                      "Covers Model Risk Management, Operational Resilience, and Consumer Duty principles.",
+                    icon: <Scale className="h-5 w-5" />,
+                    title: "FCA, PRA & ISO 42001 mapped",
+                    body: "Gaps are mapped directly to Consumer Duty, PRA SS1/23, and ISO 42001 requirements.",
                   },
                   {
-                    icon: <FileCheck className="h-5 w-5 text-blue-600" />,
-                    title: "Evidence-Grade Output",
-                    body:
-                      "Your results package is designed to be shared with compliance, auditors, and underwriters.",
+                    icon: <FileCheck className="h-5 w-5" />,
+                    title: "Evidence-grade output",
+                    body: "The PDF output is structured to be shared directly with compliance, auditors, and underwriters.",
                   },
                   {
-                    icon: <TrendingUp className="h-5 w-5 text-blue-600" />,
-                    title: "Better Insurance Terms",
-                    body:
-                      "Certified firms typically secure better coverage and lower premiums at renewal.",
+                    icon: <TrendingUp className="h-5 w-5" />,
+                    title: "Prioritised remediation",
+                    body: "Critical, High, and Medium actions ranked by renewal impact — not generic governance advice.",
                   },
                 ].map((x) => (
                   <div key={x.title} className="flex gap-4">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100">
+                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border border-slate-200 bg-slate-50 text-blue-700">
                       {x.icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-zinc-900">{x.title}</h3>
-                      <p className="text-zinc-600">{x.body}</p>
+                      <p className="text-sm font-semibold text-slate-900">{x.title}</p>
+                      <p className="mt-0.5 text-sm text-slate-500">{x.body}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8">
-                <ButtonLink href="#book" variant="primary" className="gap-2">
-                  <MessageCircle className="h-4 w-4" />
-                  Book a free consultation
+              <div className="mt-10">
+                <ButtonLink href="/assessment" variant="primary">
+                  Get your governance score
+                  <ArrowRight className="h-4 w-4" />
                 </ButtonLink>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-xl">
-              <div className="mb-6 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold text-zinc-900">
-                    RiskPilot Insurability Score
+            {/* Right — mock report */}
+            <div className="rounded-sm border border-slate-200 bg-white shadow-xl overflow-hidden">
+
+              {/* Report header */}
+              <div className="bg-slate-900 px-6 py-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-blue-400" />
+                    <span className="text-sm font-semibold text-white">RiskPilot AI Governance Report</span>
+                  </div>
+                  <span className="rounded-sm bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-300">
+                    Example
                   </span>
                 </div>
-                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
-                  Example
-                </span>
+                <div className="mt-4 flex items-end gap-3">
+                  <span className="text-5xl font-bold text-white">68</span>
+                  <div className="mb-1">
+                    <span className="text-slate-400 text-sm">/100</span>
+                    <div className="mt-0.5 inline-flex ml-3 items-center rounded-sm bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-300">
+                      Moderate Risk
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-1 text-xs text-slate-400">Enhanced terms apply · Valid 60 days</p>
               </div>
 
-              <div className="flex justify-center mb-6">
-                <div className="relative h-32 w-32">
-                  <svg className="h-32 w-32 transform -rotate-90">
-                    <circle
-                      className="text-zinc-200"
-                      strokeWidth="8"
-                      stroke="currentColor"
-                      fill="transparent"
-                      r="56"
-                      cx="64"
-                      cy="64"
-                    />
-                    <circle
-                      className="text-amber-500"
-                      strokeWidth="8"
-                      stroke="currentColor"
-                      fill="transparent"
-                      r="56"
-                      cx="64"
-                      cy="64"
-                      strokeDasharray={2 * Math.PI * 56}
-                      strokeDashoffset={2 * Math.PI * 56 * (1 - 0.68)}
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl font-bold text-zinc-900">68</span>
-                  </div>
+              {/* Score breakdown */}
+              <div className="px-6 pt-5 pb-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">
+                  Score Breakdown
+                </p>
+                <div className="space-y-3">
+                  {[
+                    { label: "Governance", score: 80, color: "bg-green-500" },
+                    { label: "Model Risk", score: 65, color: "bg-amber-500" },
+                    { label: "Auditability", score: 70, color: "bg-amber-500" },
+                    { label: "Human Oversight", score: 75, color: "bg-green-500" },
+                    { label: "Operational Monitoring", score: 68, color: "bg-amber-500" },
+                  ].map((cat) => (
+                    <div key={cat.label}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-slate-600">{cat.label}</span>
+                        <span className="font-semibold text-slate-800">{cat.score}%</span>
+                      </div>
+                      <div className="h-1.5 w-full rounded-full bg-slate-100">
+                        <div className={`h-1.5 rounded-full ${cat.color}`} style={{ width: `${cat.score}%` }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="text-center mb-6">
-                <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-                  Risk Tier: Moderate • Conditional Coverage
-                </span>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                {[
-                  { label: "Governance", score: 80, color: "bg-green-500" },
-                  { label: "Model Risk", score: 65, color: "bg-amber-500" },
-                  { label: "Auditability", score: 70, color: "bg-amber-500" },
-                  { label: "Human Oversight", score: 75, color: "bg-green-500" },
-                  { label: "Operational Monitoring", score: 68, color: "bg-amber-500" },
-                ].map((cat) => (
-                  <div key={cat.label}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-zinc-600">{cat.label}</span>
-                      <span className="font-medium">{cat.score}%</span>
-                    </div>
-                    <div className="h-1.5 w-full bg-zinc-100 rounded-full">
-                      <div
-                        className={`h-1.5 rounded-full ${cat.color}`}
-                        style={{ width: `${cat.score}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="rounded-lg border border-zinc-200 p-4">
-                <h4 className="text-sm font-semibold text-zinc-900 mb-2">
-                  Insurance Eligibility
-                </h4>
-                <ul className="space-y-2 text-xs text-zinc-600">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="h-3 w-3 text-green-600 mt-0.5" />
-                    <span>Eligible for PI coverage up to £5m</span>
+              {/* Coverage */}
+              <div className="mx-6 my-4 rounded-sm border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
+                  Coverage Implications
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-xs text-slate-700">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-green-600 mt-0.5 shrink-0" />
+                    Eligible for PI coverage — enhanced underwriting applies
                   </li>
-                  <li className="flex items-start gap-2">
-                    <AlertTriangle className="h-3 w-3 text-amber-600 mt-0.5" />
-                    <span>Exclusion: Autonomous trading decisions</span>
+                  <li className="flex items-start gap-2 text-xs text-slate-700">
+                    <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
+                    Exclusion: Autonomous decisions without documented oversight
                   </li>
-                  <li className="flex items-start gap-2">
-                    <AlertTriangle className="h-3 w-3 text-amber-600 mt-0.5" />
-                    <span>Enhanced underwriting required for credit models</span>
+                  <li className="flex items-start gap-2 text-xs text-slate-700">
+                    <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
+                    Enhanced underwriting required for credit decisioning models
                   </li>
                 </ul>
               </div>
 
-              <Link
-                href="/assessment"
-                className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-              >
-                Get your score
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+              <div className="px-6 pb-6">
+                <Link
+                  href="/assessment"
+                  className="flex w-full items-center justify-center gap-2 rounded-sm bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
+                >
+                  Run your assessment
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <p className="mt-2 text-center text-xs text-slate-400">
+                  Takes 10 minutes · Downloadable PDF output
+                </p>
+              </div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Target Industries */}
-      <section id="industries" className="scroll-mt-24 py-16 bg-white">
+      {/* ── Industries ────────────────────────────────────────────── */}
+      <section id="industries" className="scroll-mt-20 py-24 bg-slate-50 border-y border-slate-200">
         <Container>
-          <div className="text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-              Built for Regulated Financial Firms
+          <div className="text-center mb-12">
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">Industries</p>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              Built for regulated financial firms.
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-zinc-600">
-              If you&apos;re deploying AI in these areas, you need insurability.
+            <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
+              If you are deploying AI in any of these areas and are regulated by the FCA or PRA,
+              you have a governance question to answer.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: "🏦", title: "Credit Decisioning", desc: "AI lending, scoring, affordability" },
-              { icon: "📈", title: "Trading Support", desc: "Algorithmic execution, market analysis" },
-              { icon: "🛡️", title: "Fraud Detection", desc: "Transaction monitoring, AML" },
-              { icon: "📋", title: "Underwriting", desc: "Insurance pricing, risk assessment" },
+              {
+                icon: <Scale className="h-5 w-5" />,
+                title: "Credit Decisioning",
+                desc: "AI lending, affordability scoring, and automated credit decisions.",
+                risk: "Consumer Duty fair outcome accountability applies directly.",
+              },
+              {
+                icon: <TrendingUp className="h-5 w-5" />,
+                title: "Trading Support",
+                desc: "Algorithmic execution, market analysis, and order routing.",
+                risk: "Hallucination and model failure in execution may not be covered.",
+              },
+              {
+                icon: <Eye className="h-5 w-5" />,
+                title: "Fraud Detection",
+                desc: "Transaction monitoring, AML screening, and anomaly detection.",
+                risk: "AML failures linked to AI models face increasing FCA scrutiny.",
+              },
+              {
+                icon: <Lock className="h-5 w-5" />,
+                title: "Underwriting",
+                desc: "AI-assisted insurance pricing, risk classification, and referral.",
+                risk: "Model explainability is now an active underwriting criterion.",
+              },
             ].map((item) => (
               <div
                 key={item.title}
-                className="border border-zinc-200 rounded-xl p-6 text-center hover:shadow-md transition"
+                className="flex flex-col rounded-sm border border-slate-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm transition-all"
               >
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="font-semibold text-zinc-900">{item.title}</h3>
-                <p className="text-sm text-zinc-600 mt-1">{item.desc}</p>
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-sm border border-slate-200 bg-slate-50 text-blue-700">
+                  {item.icon}
+                </div>
+                <h3 className="text-sm font-bold text-slate-900">{item.title}</h3>
+                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <p className="text-xs text-amber-700 font-medium">{item.risk}</p>
+                </div>
+                <Link
+                  href="/assessment"
+                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700 hover:text-blue-800 transition-colors"
+                >
+                  Assess this use case
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
               </div>
             ))}
           </div>
         </Container>
       </section>
 
-      {/* Book a Call */}
-      <section id="book" className="scroll-mt-24 py-24 bg-zinc-50">
+      {/* ── Credibility ───────────────────────────────────────────── */}
+      <section className="py-16 bg-white border-b border-slate-200">
         <Container>
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-              Book a Free 30-Minute Consultation
-            </h2>
-            <p className="mt-4 text-lg text-zinc-600">
-              We&apos;ll review your insurability score and identify exactly what your insurers will
-              ask for.
-            </p>
-
-            <div className="mt-8 flex flex-col items-center gap-4">
-              <ButtonLink href="/assessment" variant="primary" className="group">
-                Get your free insurability score first
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </ButtonLink>
-
-              <span className="text-sm text-zinc-400">or</span>
-
-              <Link
-                href="#calendar"
-                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
-              >
-                <Calendar className="h-4 w-4" />
-                Skip to booking
-              </Link>
-            </div>
-
-            <div id="calendar" className="mt-12 rounded-2xl border border-zinc-200 bg-white p-8">
-              <p className="mb-4 text-zinc-500">30-minute strategy call</p>
-              <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 bg-zinc-50 text-zinc-400">
-                [Calendly]
+          <div className="mx-auto max-w-3xl">
+            <div className="grid gap-8 sm:grid-cols-3 text-center sm:text-left">
+              <div className="sm:col-span-1">
+                <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
+                  Why RiskPilot
+                </p>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  Built by someone with direct experience in regulated financial environments
+                  and the London insurance market.
+                </p>
               </div>
-              <p className="mt-4 text-xs text-zinc-400">
-                Free • No commitment • Ask about your specific use case
-              </p>
+              <div className="sm:col-span-2 grid gap-4 sm:grid-cols-3">
+                {[
+                  { title: "AI Governance", body: "Practical understanding of how AI risk is assessed and documented in regulated environments." },
+                  { title: "Model Risk", body: "Familiarity with PRA model risk management expectations and internal validation frameworks." },
+                  { title: "London Market", body: "Direct experience with insurance placement, underwriting criteria, and renewal processes." },
+                ].map((c) => (
+                  <div key={c.title} className="border-l border-slate-200 pl-4">
+                    <p className="text-sm font-semibold text-slate-900">{c.title}</p>
+                    <p className="mt-1 text-xs text-slate-500 leading-relaxed">{c.body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-white py-12">
+      {/* ── Book ─────────────────────────────────────────────────── */}
+      <section id="book" className="scroll-mt-20 py-24 bg-slate-50">
         <Container>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-16 lg:grid-cols-2 items-start">
+
+            {/* Left — description */}
             <div>
-              <h3 className="font-bold text-zinc-900">RiskPilot AI</h3>
-              <p className="mt-2 text-sm text-zinc-600">
-                AI insurability assessments for regulated financial firms
+              <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
+                Book a Consultation
+              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl leading-tight">
+                Let&apos;s review your score together.
+              </h2>
+              <p className="mt-5 text-base text-slate-600 leading-relaxed">
+                Once you have your governance score, we review it together in a 30-minute call.
+                We identify exactly what your regulators, auditors, and insurers will ask for —
+                and what you need to close the gaps before it becomes a problem.
+              </p>
+
+              <div className="mt-8 space-y-4">
+                {[
+                  { icon: <Clock className="h-4 w-4" />, text: "30 minutes, no obligation" },
+                  { icon: <Shield className="h-4 w-4" />, text: "Tailored to your specific AI use case" },
+                  { icon: <FileCheck className="h-4 w-4" />, text: "Walk away with a clear action list for renewal" },
+                  { icon: <CheckCircle2 className="h-4 w-4" />, text: "Complete your assessment first — makes the call more valuable" },
+                ].map((item) => (
+                  <div key={item.text} className="flex items-center gap-3 text-sm text-slate-600">
+                    <div className="text-blue-700">{item.icon}</div>
+                    {item.text}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 p-4 border border-slate-200 rounded-sm bg-white">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Not ready to book?</p>
+                <p className="text-sm text-slate-600">
+                  Run the free assessment first and download your evidence pack.
+                  The score gives us something concrete to work from.
+                </p>
+                <Link href="/assessment" className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors">
+                  Start free assessment
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right — contact form */}
+            <div className="rounded-sm border border-slate-200 bg-white p-8 shadow-sm">
+              <h3 className="text-base font-bold text-slate-900 mb-1">Request a consultation</h3>
+              <p className="text-sm text-slate-500 mb-6">
+                We will confirm your booking within one business day.
+              </p>
+              <ContactForm />
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Footer ───────────────────────────────────────────────── */}
+      <footer className="border-t border-slate-200 bg-slate-900 py-12">
+        <Container>
+          <div className="grid gap-8 md:grid-cols-4">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-3">
+                <Shield className="h-5 w-5 text-blue-400" />
+                <span className="font-bold text-white">RiskPilot AI</span>
+              </div>
+              <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
+                AI governance readiness assessments and evidence for FCA and PRA regulated firms.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-zinc-900">Services</h4>
-              <ul className="mt-4 space-y-2 text-sm">
-                <li>
-                  <Link href="/assessment" className="text-zinc-600 hover:text-blue-600">
-                    Free Insurability Score
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#book" className="text-zinc-600 hover:text-blue-600">
-                    Consultation
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/certification" className="text-zinc-600 hover:text-blue-600">
-                    Certification
-                  </Link>
-                </li>
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Services</p>
+              <ul className="space-y-2.5 text-sm">
+                {[
+                  { href: "/assessment", label: "Free Governance Assessment" },
+                  { href: "/#book", label: "Consultation" },
+                  { href: "/#how-it-works", label: "How It Works" },
+                ].map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="text-slate-400 hover:text-white transition-colors">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-zinc-900">Contact</h4>
-              <ul className="mt-4 space-y-2 text-sm">
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Contact</p>
+              <ul className="space-y-2.5 text-sm">
                 <li>
-                  <a href="mailto:hello@riskpilot.ai" className="text-zinc-600 hover:text-blue-600">
+                  <a href="mailto:hello@riskpilot.ai" className="text-slate-400 hover:text-white transition-colors">
                     hello@riskpilot.ai
                   </a>
                 </li>
-                <li className="text-zinc-600">London • UK Financial Services</li>
+                <li className="text-slate-500">London, United Kingdom</li>
+                <li className="text-slate-500">UK Financial Services</li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-12 border-t border-zinc-200 pt-8 text-center text-sm text-zinc-600">
+          <div className="mt-10 border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
             <p>&copy; {new Date().getFullYear()} RiskPilot AI. All rights reserved.</p>
-            <p className="mt-1 text-xs text-zinc-400">
-              Not legal advice. For regulated firms seeking insurability guidance.
-            </p>
+            <p>Not legal advice. For regulated firms seeking AI governance guidance.</p>
           </div>
         </Container>
       </footer>

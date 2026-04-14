@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RiskPilot AI",
-  description: "AI insurability assessments for regulated financial firms",
+  title: "RiskPilot AI — AI Governance for Regulated Firms",
+  description: "AI governance readiness assessments and evidence for FCA and PRA regulated firms. Used for compliance reviews, board sign-off, and insurance renewal.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
