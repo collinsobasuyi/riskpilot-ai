@@ -41,6 +41,12 @@ export type Frequency = "hourly" | "daily" | "weekly" | "monthly" | "ongoing";
 export type OversightLevel = "none" | "periodic" | "continuous";
 export type IncidentHistory = "none" | "minor" | "significant" | "multiple";
 export type Regulator = "fca" | "pra" | "both" | "other" | "none";
+export type AiCoverageCheck = "covered" | "uncertain" | "gap-identified" | "no-coverage";
+export type ConsumerRedress = "formal" | "in-progress" | "none";
+export type VulnerableCustomerHandling = "yes" | "partial" | "none" | "not-applicable";
+export type ConsumerExplainability = "automated" | "on-request" | "none" | "not-customer-facing";
+export type IndependentValidation = "internal-independent" | "external" | "none" | "not-yet";
+export type FormalAiPolicy = "yes" | "in-progress" | "no";
 
 export interface AssessmentFormData {
   companyName: string;
@@ -115,6 +121,22 @@ export interface AssessmentFormData {
   redTeamingReportUrl?: string;
   apiEndpoint?: string;
   apiAccessible?: boolean;
+
+  // New: Insurance coverage
+  aiCoverageCheck?: AiCoverageCheck;
+
+  // New: Consumer Duty
+  consumerRedress?: ConsumerRedress;
+  vulnerableCustomerHandling?: VulnerableCustomerHandling;
+  consumerExplainability?: ConsumerExplainability;
+
+  // New: PRA SS1/23 + SMF
+  independentValidation?: IndependentValidation;
+  smfAccountability?: boolean;
+
+  // New: ISO 42001 + general governance
+  formalAiPolicy?: FormalAiPolicy;
+  incidentResponsePlan?: boolean;
 
   additionalContext: string;
 }
@@ -196,6 +218,15 @@ export const DEFAULT_ASSESSMENT_FORM: AssessmentFormData = {
   redTeamingReportUrl: "",
   apiEndpoint: "",
   apiAccessible: false,
+
+  aiCoverageCheck: undefined,
+  consumerRedress: undefined,
+  vulnerableCustomerHandling: undefined,
+  consumerExplainability: undefined,
+  independentValidation: undefined,
+  smfAccountability: false,
+  formalAiPolicy: undefined,
+  incidentResponsePlan: false,
 
   additionalContext: "",
 };

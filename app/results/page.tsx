@@ -217,6 +217,58 @@ function computeResults(data: AssessmentFormData) {
   if (noKillSwitch)
     drivers.push("No effective kill switch — inability to stop AI quickly is a coverage concern");
 
+  // ── NEW: Insurance coverage check ─────────────────────────────
+  const coverageGap = data.aiCoverageCheck === "gap-identified" || data.aiCoverageCheck === "no-coverage";
+  const coverageUncertain = !data.aiCoverageCheck || data.aiCoverageCheck === "uncertain";
+  const coverageBoost = data.aiCoverageCheck === "no-coverage" ? 12 :
+    data.aiCoverageCheck === "gap-identified" ? 10 :
+    data.aiCoverageCheck === "uncertain" ? 6 : 0;
+  if (coverageGap)
+    drivers.push("AI coverage gap confirmed — current policy does not cover AI-related claims");
+  else if (coverageUncertain)
+    drivers.push("AI coverage unverified — policy wording has not been checked for AI exclusions");
+
+  // ── NEW: Consumer Duty ─────────────────────────────────────────
+  const isCustomerFacing = data.deploymentType === "customer" || data.deploymentType === "both";
+  const noConsumerRedress = data.consumerRedress === "none" || !data.consumerRedress;
+  const noConsumerExplainability = data.consumerExplainability === "none";
+  const noVulnerableHandling = data.vulnerableCustomerHandling === "none";
+  const consumerDutyPenalty =
+    (isCustomerFacing && noConsumerRedress ? 10 : 0) +
+    (isCustomerFacing && noConsumerExplainability ? 8 : 0) +
+    (isCustomerFacing && noVulnerableHandling ? 6 : 0);
+
+  if (isCustomerFacing && noConsumerRedress)
+    drivers.push("No consumer redress mechanism — FCA Consumer Duty requires a complaints/appeals process for AI decisions");
+  if (isCustomerFacing && noConsumerExplainability)
+    drivers.push("No consumer-facing explanation of AI decisions — GDPR Article 22 and Consumer Duty obligation");
+  if (isCustomerFacing && noVulnerableHandling)
+    drivers.push("No vulnerable customer handling — Consumer Duty requires differentiated approach");
+
+  // ── NEW: PRA SS1/23 — independent validation ──────────────────
+  const noIndependentValidation = data.independentValidation === "none" || !data.independentValidation;
+  const validationPenalty = noIndependentValidation && data.regulatedEntity ? 8 : 0;
+  if (noIndependentValidation && data.regulatedEntity)
+    drivers.push("No independent model validation — PRA SS1/23 requires validation separate from the build team");
+
+  // ── NEW: SMF accountability ────────────────────────────────────
+  const noSmf = !data.smfAccountability;
+  const smfPenalty = noSmf && data.regulatedEntity ? 6 : 0;
+  if (noSmf && data.regulatedEntity)
+    drivers.push("No named Senior Manager accountable for this AI — SMF regime requires designated accountability");
+
+  // ── NEW: Formal AI policy ─────────────────────────────────────
+  const noFormalPolicy = data.formalAiPolicy === "no" || !data.formalAiPolicy;
+  const policyPenalty = noFormalPolicy ? 6 : 0;
+  if (noFormalPolicy)
+    drivers.push("No formal AI policy — required by ISO 42001 and expected by auditors and underwriters");
+
+  // ── NEW: Incident response plan ───────────────────────────────
+  const noIncidentPlan = !data.incidentResponsePlan;
+  const incidentPlanPenalty = noIncidentPlan ? 5 : 0;
+  if (noIncidentPlan)
+    drivers.push("No AI incident response plan — insurers need documented remediation procedures for claims");
+
   // --- Overall Risk Score ---
   const raw =
     decisionScore * 0.2 +
@@ -231,7 +283,13 @@ function computeResults(data: AssessmentFormData) {
     docScore +
     oversightPenalty +
     processPenalty +
-    dpoPenalty;
+    dpoPenalty +
+    coverageBoost +
+    consumerDutyPenalty +
+    validationPenalty +
+    smfPenalty +
+    policyPenalty +
+    incidentPlanPenalty;
 
   const riskScore = clamp(Math.round(raw), 0, 100);
   const riskLevel: "High" | "Medium" | "Low" =
@@ -270,10 +328,14 @@ function computeResults(data: AssessmentFormData) {
     critical.push("Complete DPIA and document controls for sensitive data processing");
   if (data.incidentHistory === "significant" || data.incidentHistory === "multiple")
     critical.push("Develop incident response plan with root cause analysis documentation");
-  if (noBiasTesting && data.deploymentType !== "internal")
+  if (noBiasTesting && isCustomerFacing)
     critical.push("Conduct bias and fairness testing before renewal — required for customer-facing AI");
   if (noKillSwitch)
     critical.push("Implement an emergency stop mechanism — inability to halt AI is a key underwriting concern");
+  if (coverageGap)
+    critical.push("Resolve AI coverage gap with your broker before renewal — confirm AI errors and decisions are covered");
+  if (isCustomerFacing && noConsumerRedress)
+    critical.push("Establish a consumer redress mechanism — FCA Consumer Duty and GDPR require an appeals process for AI decisions");
 
   if (!data.documentedProcess)
     high.push("Document AI governance framework for insurer due diligence");
@@ -283,12 +345,22 @@ function computeResults(data: AssessmentFormData) {
     high.push("Create model cards and technical documentation for underwriting review");
   if (data.thirdPartyData)
     high.push("Compile third-party vendor risk assessments for insurer questionnaire");
-  if (hasConsumerDuty && data.deploymentType !== "internal")
+  if (hasConsumerDuty && isCustomerFacing)
     high.push("Prepare Consumer Duty evidence pack for FCA-supervised renewal");
   if (hasPRA)
     high.push("Align model documentation to PRA SS1/23 model risk management standards");
   if (noAuditTrail)
     high.push("Establish audit trails for all AI decisions — required for claims processing");
+  if (noIndependentValidation && data.regulatedEntity)
+    high.push("Arrange independent model validation — PRA SS1/23 requires validation separate from the build team");
+  if (noSmf && data.regulatedEntity)
+    high.push("Name a Senior Manager (SMF) accountable for this AI system — required under SM&CR for regulated firms");
+  if (noFormalPolicy)
+    high.push("Draft and approve a formal AI policy — expected by ISO 42001, auditors, and underwriters");
+  if (coverageUncertain && !coverageGap)
+    high.push("Check policy wording with your broker — confirm whether AI-related claims are explicitly covered");
+  if (isCustomerFacing && noConsumerExplainability)
+    high.push("Implement consumer-facing explanations for AI decisions — GDPR Article 22 and Consumer Duty obligation");
 
   medium.push("Document system boundaries and out-of-scope use cases for policy wording");
   medium.push("Schedule quarterly AI risk reviews aligned with your insurance renewal cycle");
@@ -298,6 +370,10 @@ function computeResults(data: AssessmentFormData) {
     medium.push("High-frequency use requires automated monitoring with alerting evidence");
   if (noTraining)
     medium.push("Deliver AI governance training programme — evidence for underwriters");
+  if (noIncidentPlan)
+    medium.push("Document an AI incident response plan — insurers need procedures for how failures are escalated and remediated");
+  if (isCustomerFacing && noVulnerableHandling)
+    medium.push("Implement vulnerable customer identification and handling — FCA Consumer Duty requirement");
 
   const summary =
     coverageEligibility === "Eligible"
@@ -334,35 +410,52 @@ function computeResults(data: AssessmentFormData) {
   ];
 
   // --- Compliance gaps ---
+  const consumerDutyMissing: string[] = [];
+  if (hasConsumerDuty || isCustomerFacing) {
+    if (!data.documentedProcess) consumerDutyMissing.push("Governance evidence and documented process");
+    if (noConsumerRedress) consumerDutyMissing.push("Consumer redress / appeals mechanism");
+    if (noConsumerExplainability) consumerDutyMissing.push("Consumer-facing explanation of AI decisions (Article 22)");
+    if (noVulnerableHandling) consumerDutyMissing.push("Vulnerable customer identification and handling");
+  }
+
+  const praMissing: string[] = [];
+  if (hasPRA || data.regulatedEntity) {
+    if (modelDocs.length === 0) praMissing.push("Model documentation standards");
+    if (noIndependentValidation) praMissing.push("Independent model validation (separate from build team)");
+    if (noSmf) praMissing.push("Named Senior Manager (SMF) accountability");
+    if (data.existingOversight === "none") praMissing.push("Oversight framework and controls evidence");
+  }
+
+  const isoMissing: string[] = [];
+  if (noFormalPolicy) isoMissing.push("Formal AI policy (approved and documented)");
+  if (!data.documentedProcess) isoMissing.push("AI governance process documentation");
+  if (noIncidentPlan) isoMissing.push("Incident response and remediation procedures");
+
+  const gdprMissing: string[] = [];
+  if (data.dataSensitivity === "sensitive") gdprMissing.push("Article 35 DPIA for high-risk processing");
+  if (isCustomerFacing && noConsumerExplainability) gdprMissing.push("Article 22 automated decision safeguards and right to explanation");
+  if (data.thirdPartyData) gdprMissing.push("Third-party data processor agreements and due diligence");
+
   const complianceGaps = [
     {
       standard: "FCA Consumer Duty",
-      status: hasConsumerDuty ? (data.documentedProcess ? "partial" : "gap") : "ok",
-      missing: hasConsumerDuty && !data.documentedProcess
-        ? ["Governance evidence", "Outcome monitoring", "Transparency documentation"]
-        : [],
+      status: consumerDutyMissing.length === 0 ? "ok" : consumerDutyMissing.length <= 1 ? "partial" : "gap",
+      missing: consumerDutyMissing,
     },
     {
       standard: "PRA Model Risk (SS1/23)",
-      status: hasPRA ? (modelDocs.length > 0 ? "partial" : "gap") : "ok",
-      missing: hasPRA && modelDocs.length === 0
-        ? ["Model validation", "Documentation standards", "Oversight framework"]
-        : [],
+      status: praMissing.length === 0 ? "ok" : praMissing.length <= 1 ? "partial" : "gap",
+      missing: praMissing,
     },
     {
       standard: "ISO 42001",
-      status: data.documentedProcess ? "partial" : "gap",
-      missing: data.documentedProcess
-        ? ["Risk treatment plan", "Documented evidence"]
-        : ["Governance policy", "Risk process", "Documented information"],
+      status: isoMissing.length === 0 ? "ok" : isoMissing.length <= 1 ? "partial" : "gap",
+      missing: isoMissing,
     },
     {
       standard: "GDPR / UK GDPR",
-      status: data.dataSensitivity === "sensitive" || data.deploymentType !== "internal" ? "partial" : "ok",
-      missing:
-        data.dataSensitivity === "sensitive" || data.deploymentType !== "internal"
-          ? ["DPIA documentation", "Automated decision safeguards (Article 22)"]
-          : [],
+      status: gdprMissing.length === 0 ? "ok" : gdprMissing.length <= 1 ? "partial" : "gap",
+      missing: gdprMissing,
     },
   ];
 
@@ -600,6 +693,43 @@ export default function ResultsPage() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Insurance coverage callout ── */}
+            {fd.aiCoverageCheck && fd.aiCoverageCheck !== "covered" && (
+              <div className={`mb-8 p-4 rounded-xl border print-section ${
+                fd.aiCoverageCheck === "no-coverage" || fd.aiCoverageCheck === "gap-identified"
+                  ? "bg-red-50 border-red-200"
+                  : "bg-amber-50 border-amber-200"
+              }`}>
+                <div className="flex items-start gap-3">
+                  <Shield className={`h-5 w-5 shrink-0 mt-0.5 ${
+                    fd.aiCoverageCheck === "no-coverage" || fd.aiCoverageCheck === "gap-identified"
+                      ? "text-red-600"
+                      : "text-amber-600"
+                  }`} />
+                  <div>
+                    <p className={`font-semibold ${
+                      fd.aiCoverageCheck === "no-coverage" || fd.aiCoverageCheck === "gap-identified"
+                        ? "text-red-800"
+                        : "text-amber-800"
+                    }`}>
+                      {fd.aiCoverageCheck === "no-coverage" && "No PI / D&O coverage in place"}
+                      {fd.aiCoverageCheck === "gap-identified" && "AI coverage gap identified"}
+                      {fd.aiCoverageCheck === "uncertain" && "Insurance coverage not verified"}
+                    </p>
+                    <p className={`mt-1 text-sm ${
+                      fd.aiCoverageCheck === "no-coverage" || fd.aiCoverageCheck === "gap-identified"
+                        ? "text-red-700"
+                        : "text-amber-700"
+                    }`}>
+                      {fd.aiCoverageCheck === "no-coverage" && "This AI system is operating without relevant insurance coverage. Any AI-related claims, regulatory penalties, or third-party losses would be uninsured."}
+                      {fd.aiCoverageCheck === "gap-identified" && "Your current policy has a confirmed gap in AI coverage. Discuss with your broker before the next renewal — exclusions for AI errors or automated decisions are common in legacy policies."}
+                      {fd.aiCoverageCheck === "uncertain" && "Policy wording has not been checked for AI exclusions. Many legacy PI and D&O policies silently exclude AI-related claims. Verify with your broker."}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -847,6 +977,7 @@ export default function ResultsPage() {
                       { label: "Data Sensitivity", value: fd.dataSensitivity },
                       { label: "Oversight", value: fd.existingOversight },
                       ...(fd.regulator ? [{ label: "Regulator", value: fd.regulator.toUpperCase() }] : []),
+                      ...(fd.aiCoverageCheck ? [{ label: "AI Coverage", value: fd.aiCoverageCheck.replace(/-/g, " ") }] : []),
                     ].map(({ label, value }) => (
                       <div key={label} className="flex justify-between">
                         <span className="text-zinc-500">{label}</span>
@@ -860,8 +991,13 @@ export default function ResultsPage() {
                 <Card title="Governance Snapshot" icon={<Users className="h-5 w-5 text-blue-600" />}>
                   <div className="space-y-2">
                     {[
-                      { label: "Documented process", ok: fd.documentedProcess },
+                      { label: "Formal AI policy", ok: fd.formalAiPolicy === "yes" },
+                      { label: "Documented governance process", ok: fd.documentedProcess },
+                      { label: "Named SMF accountability", ok: !!fd.smfAccountability },
                       { label: "DPO in place", ok: fd.hasDpo },
+                      { label: "Independent model validation", ok: fd.independentValidation === "internal-independent" || fd.independentValidation === "external" },
+                      { label: "Consumer redress mechanism", ok: fd.consumerRedress === "formal" },
+                      { label: "Incident response plan", ok: !!fd.incidentResponsePlan },
                       { label: "External audit", ok: !!fd.hasExternalAudit },
                       { label: "Model cards exist", ok: !!fd.hasModelCards },
                       { label: "Red-teaming done", ok: !!fd.hasRedTeaming },
@@ -910,11 +1046,11 @@ export default function ResultsPage() {
                       Book a free 30-min call to review your score and prepare your evidence pack.
                     </p>
                     <ButtonLink
-                      href="/#book"
+                      href="mailto:hello@riskpilot.ai"
                       variant="secondary"
                       className="w-full justify-center bg-white text-blue-700 hover:bg-blue-50 border-0"
                     >
-                      Book free consultation
+                      Get in touch
                     </ButtonLink>
                   </div>
                 </div>

@@ -233,6 +233,17 @@ function StepFirmDetails({ data, errors, onChange }: {
             <Hint>e.g. PI renewal preparation, internal governance review, regulatory submission</Hint>
             <TextInput name="purpose" value={data.purpose ?? ""} onChange={onChange} placeholder="Insurance renewal preparation" />
           </div>
+          <div>
+            <Label>Does your current PI or D&amp;O policy cover AI-related claims?</Label>
+            <Hint>Check your policy wording or ask your broker. Many legacy policies contain silent exclusions for AI errors, algorithmic decisions, or model failures.</Hint>
+            <Select name="aiCoverageCheck" value={data.aiCoverageCheck ?? ""} onChange={onChange}>
+              <option value="">Not checked / unsure</option>
+              <option value="covered">Yes — confirmed AI is covered by existing policy</option>
+              <option value="uncertain">Uncertain — haven&apos;t checked policy wording</option>
+              <option value="gap-identified">Gap identified — AI not fully covered</option>
+              <option value="no-coverage">No relevant PI or D&amp;O coverage in place</option>
+            </Select>
+          </div>
         </div>
       </div>
 
@@ -456,6 +467,17 @@ function StepRiskProfile({ data, errors, onChange }: {
               <option value="fully-transparent">Fully transparent — decision logic is auditable</option>
             </Select>
           </div>
+          <div>
+            <Label>Consumer-facing explanations (GDPR Article 22 / Consumer Duty)</Label>
+            <Hint>Can individuals receive an explanation of an AI-driven decision that affects them? This is a specific GDPR Article 22 and FCA Consumer Duty obligation — separate from whether the model is technically interpretable.</Hint>
+            <Select name="consumerExplainability" value={data.consumerExplainability ?? ""} onChange={onChange}>
+              <option value="">Not specified</option>
+              <option value="not-customer-facing">Not applicable — AI does not affect individual consumers</option>
+              <option value="automated">Yes — automated explanation provided at point of decision</option>
+              <option value="on-request">On request only — available but not proactively provided</option>
+              <option value="none">No — consumers cannot obtain an explanation</option>
+            </Select>
+          </div>
         </div>
       </div>
 
@@ -503,6 +525,17 @@ function StepRiskProfile({ data, errors, onChange }: {
               options={["Pre-deployment bias testing", "Ongoing fairness monitoring", "Protected characteristic analysis", "No testing conducted", "Unsure"]}
               selected={data.biasTesting ?? []} onChange={onChange} />
           </div>
+          <div>
+            <Label>Vulnerable customer handling (FCA Consumer Duty)</Label>
+            <Hint>FCA Consumer Duty requires firms to consider consumers in vulnerable circumstances. Does this AI system identify or treat vulnerable customers differently?</Hint>
+            <Select name="vulnerableCustomerHandling" value={data.vulnerableCustomerHandling ?? ""} onChange={onChange}>
+              <option value="">Not specified</option>
+              <option value="not-applicable">Not applicable — AI does not interact with or affect individual consumers</option>
+              <option value="yes">Yes — vulnerable customer identification and differentiated handling in place</option>
+              <option value="partial">Partial — some consideration but no formal process</option>
+              <option value="none">No — vulnerable customers are not specifically identified or handled differently</option>
+            </Select>
+          </div>
         </div>
       </div>
     </div>
@@ -529,8 +562,10 @@ function StepGovernance({ data, onChange }: {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {[
-              { name: "documentedProcess", label: "We have a documented AI governance process" },
-              { name: "hasDpo", label: "We have a Data Protection Officer (DPO)" },
+              { name: "documentedProcess", label: "Documented AI governance process exists" },
+              { name: "hasDpo", label: "Data Protection Officer (DPO) in place" },
+              { name: "smfAccountability", label: "Named Senior Manager (SMF) accountable for this AI system" },
+              { name: "incidentResponsePlan", label: "Documented incident response plan for AI failures" },
             ].map((cb) => (
               <label key={cb.name} className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700">
                 <input type="checkbox" name={cb.name}
@@ -539,6 +574,28 @@ function StepGovernance({ data, onChange }: {
                 {cb.label}
               </label>
             ))}
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label>Formal AI policy</Label>
+              <Hint>A documented organisation-wide AI policy — distinct from a governance process. Required by ISO 42001.</Hint>
+              <Select name="formalAiPolicy" value={data.formalAiPolicy ?? ""} onChange={onChange}>
+                <option value="">Not specified</option>
+                <option value="yes">Yes — formal AI policy in place and approved</option>
+                <option value="in-progress">In progress — being developed</option>
+                <option value="no">No — no formal AI policy exists</option>
+              </Select>
+            </div>
+            <div>
+              <Label>Consumer redress mechanism (FCA Consumer Duty)</Label>
+              <Hint>Can consumers affected by this AI system challenge or appeal decisions made about them?</Hint>
+              <Select name="consumerRedress" value={data.consumerRedress ?? ""} onChange={onChange}>
+                <option value="">Not specified</option>
+                <option value="formal">Formal — documented complaints and appeals process in place</option>
+                <option value="in-progress">In progress — being implemented</option>
+                <option value="none">None — no consumer redress mechanism exists</option>
+              </Select>
+            </div>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -598,6 +655,19 @@ function StepGovernance({ data, onChange }: {
                 <option value="external-audit">External audit or third-party review</option>
               </Select>
             </div>
+            <div>
+              <Label>Independent model validation (PRA SS1/23)</Label>
+              <Hint>PRA SS1/23 requires validation to be performed by people independent of those who built the model. This can be an internal independent team or an external validator.</Hint>
+              <Select name="independentValidation" value={data.independentValidation ?? ""} onChange={onChange}>
+                <option value="">Not specified</option>
+                <option value="internal-independent">Internal — validated by a team independent of the builders</option>
+                <option value="external">External — third-party model validation conducted</option>
+                <option value="not-yet">Not yet — validation not yet performed</option>
+                <option value="none">None — validated only by the team that built it</option>
+              </Select>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label>AI governance training frequency</Label>
               <Select name="trainingFrequency" value={data.trainingFrequency ?? ""} onChange={onChange}>
