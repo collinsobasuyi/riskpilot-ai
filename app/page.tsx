@@ -33,8 +33,8 @@ export default function Home() {
             </div>
 
             <h1 className="text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl md:text-7xl">
-              Know Where Your
-              <span className="block text-blue-400">AI Governance Stands.</span>
+              Know Where Your AI
+              <span className="block text-blue-400">Governance Stands.</span>
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
