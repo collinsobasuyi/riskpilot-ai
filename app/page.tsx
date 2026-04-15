@@ -1,7 +1,4 @@
 // app/page.tsx
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -15,110 +12,9 @@ import {
   BarChart3,
   Lock,
   Eye,
-  Clock,
 } from "lucide-react";
 import Container from "../components/layout/Container";
 import ButtonLink from "../components/ui/ButtonLink";
-
-// ─── Contact form ─────────────────────────────────────────────────────────────
-
-function ContactForm() {
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({ name: "", firm: "", email: "", message: "" });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In production: POST to an API route or Formspree/Resend
-    setSubmitted(true);
-  };
-
-  if (submitted) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 border border-blue-100">
-          <CheckCircle2 className="h-7 w-7 text-blue-700" />
-        </div>
-        <h3 className="text-lg font-semibold text-slate-900">Request received</h3>
-        <p className="mt-2 text-sm text-slate-500 max-w-xs">
-          Thank you. We will be in touch within one business day to confirm your call.
-        </p>
-        <button
-          onClick={() => { setSubmitted(false); setForm({ name: "", firm: "", email: "", message: "" }); }}
-          className="mt-6 text-sm text-blue-700 hover:text-blue-800 font-medium"
-        >
-          Submit another request
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
-            Full name <span className="text-red-500">*</span>
-          </label>
-          <input
-            required
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-            placeholder="Jane Smith"
-            className="w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
-            Firm <span className="text-red-500">*</span>
-          </label>
-          <input
-            required
-            type="text"
-            value={form.firm}
-            onChange={(e) => setForm((p) => ({ ...p, firm: e.target.value }))}
-            placeholder="Acme Financial Ltd"
-            className="w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
-          Work email <span className="text-red-500">*</span>
-        </label>
-        <input
-          required
-          type="email"
-          value={form.email}
-          onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-          placeholder="jane@acmefinancial.com"
-          className="w-full rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
-        />
-      </div>
-      <div>
-        <label className="mb-1 block text-xs font-medium uppercase tracking-widest text-slate-500">
-          What would you like to discuss?
-        </label>
-        <textarea
-          rows={3}
-          value={form.message}
-          onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
-          placeholder="e.g. Preparing for PI renewal, AI governance review, specific use case..."
-          className="w-full resize-none rounded-sm border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-700"
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full rounded-sm bg-blue-700 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition-colors shadow-sm"
-      >
-        Request a consultation
-      </button>
-      <p className="text-center text-xs text-slate-400">
-        Free • 30 minutes • No obligation
-      </p>
-    </form>
-  );
-}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -156,10 +52,10 @@ export default function Home() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/#book"
+                href="/about"
                 className="inline-flex items-center gap-2 rounded-sm border border-slate-600 bg-transparent px-6 py-3 text-sm font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors"
               >
-                Book a consultation
+                Read the thesis
               </Link>
             </div>
 
@@ -330,10 +226,10 @@ export default function Home() {
               },
               {
                 step: "03",
-                title: "Evidence Pack for Underwriters",
-                body: "Download a formatted evidence document to share with your broker or compliance team. Book a review call to discuss the findings.",
-                cta: "Book a call",
-                href: "/#book",
+                title: "Evidence Pack for Stakeholders",
+                body: "Download a formatted evidence document to share with your broker, compliance team, or board. Use it for renewal discussions, regulatory reviews, and governance sign-off.",
+                cta: "See what's covered",
+                href: "/about",
               },
             ].map((item) => (
               <div key={item.step} className="relative bg-white border border-slate-200 rounded-sm p-6">
@@ -605,64 +501,6 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* ── Book ─────────────────────────────────────────────────── */}
-      <section id="book" className="scroll-mt-20 py-24 bg-slate-50">
-        <Container>
-          <div className="grid gap-16 lg:grid-cols-2 items-start">
-
-            {/* Left — description */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
-                Book a Consultation
-              </p>
-              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl leading-tight">
-                Let&apos;s review your score together.
-              </h2>
-              <p className="mt-5 text-base text-slate-600 leading-relaxed">
-                Once you have your governance score, we review it together in a 30-minute call.
-                We identify exactly what your regulators, auditors, and insurers will ask for —
-                and what you need to close the gaps before it becomes a problem.
-              </p>
-
-              <div className="mt-8 space-y-4">
-                {[
-                  { icon: <Clock className="h-4 w-4" />, text: "30 minutes, no obligation" },
-                  { icon: <Shield className="h-4 w-4" />, text: "Tailored to your specific AI use case" },
-                  { icon: <FileCheck className="h-4 w-4" />, text: "Walk away with a clear action list for renewal" },
-                  { icon: <CheckCircle2 className="h-4 w-4" />, text: "Complete your assessment first — makes the call more valuable" },
-                ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-3 text-sm text-slate-600">
-                    <div className="text-blue-700">{item.icon}</div>
-                    {item.text}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-8 p-4 border border-slate-200 rounded-sm bg-white">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Not ready to book?</p>
-                <p className="text-sm text-slate-600">
-                  Run the free assessment first and download your evidence pack.
-                  The score gives us something concrete to work from.
-                </p>
-                <Link href="/assessment" className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors">
-                  Start free assessment
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Right — contact form */}
-            <div className="rounded-sm border border-slate-200 bg-white p-8 shadow-sm">
-              <h3 className="text-base font-bold text-slate-900 mb-1">Request a consultation</h3>
-              <p className="text-sm text-slate-500 mb-6">
-                We will confirm your booking within one business day.
-              </p>
-              <ContactForm />
-            </div>
-          </div>
-        </Container>
-      </section>
-
       {/* ── Footer ───────────────────────────────────────────────── */}
       <footer className="border-t border-slate-200 bg-slate-900 py-12">
         <Container>
@@ -682,7 +520,7 @@ export default function Home() {
               <ul className="space-y-2.5 text-sm">
                 {[
                   { href: "/assessment", label: "Free Governance Assessment" },
-                  { href: "/#book", label: "Consultation" },
+                  { href: "/about", label: "About RiskPilot" },
                   { href: "/#how-it-works", label: "How It Works" },
                 ].map((l) => (
                   <li key={l.href}>

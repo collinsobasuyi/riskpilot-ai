@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/#how-it-works", label: "How It Works" },
   { href: "/#score", label: "Report" },
   { href: "/#industries", label: "Industries" },
+  { href: "/about", label: "About" },
 ];
 
 export default function Navbar() {
@@ -63,12 +64,6 @@ export default function Navbar() {
 
             {/* CTA */}
             <div className="hidden md:flex items-center gap-3 shrink-0">
-              <Link
-                href="/#book"
-                className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors"
-              >
-                Book a call
-              </Link>
               <Link
                 href="/assessment"
                 className="inline-flex items-center gap-1.5 rounded-sm bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 transition-colors shadow-sm"
