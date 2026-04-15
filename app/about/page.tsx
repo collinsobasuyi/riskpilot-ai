@@ -138,7 +138,7 @@ export default function AboutPage() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-slate-900 pt-28 pb-20">
+      <section className="bg-slate-900 pt-20 pb-14">
         <Container>
           <div className="mx-auto max-w-3xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium tracking-widest text-slate-300 uppercase">
@@ -158,7 +158,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Four-layer story ─────────────────────────────────────── */}
-      <section className="bg-white py-16 border-b border-slate-200">
+      <section className="bg-white py-10 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-8">
@@ -204,7 +204,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── The Problem ──────────────────────────────────────────── */}
-      <section className="bg-slate-50 py-20 border-b border-slate-200">
+      <section className="bg-slate-50 py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -280,7 +280,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Real-world failures ───────────────────────────────────── */}
-      <section className="bg-white py-20 border-b border-slate-200">
+      <section className="bg-white py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-4xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -357,7 +357,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Regulatory landscape ─────────────────────────────────── */}
-      <section className="bg-slate-50 py-20 border-b border-slate-200">
+      <section className="bg-slate-50 py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-4xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -393,7 +393,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Solution ─────────────────────────────────────────────── */}
-      <section className="bg-white py-20 border-b border-slate-200">
+      <section className="bg-white py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -448,7 +448,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Target market & buyer ─────────────────────────────────── */}
-      <section className="bg-slate-50 py-20 border-b border-slate-200">
+      <section className="bg-slate-50 py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -523,7 +523,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Hypothesis ───────────────────────────────────────────── */}
-      <section className="bg-white py-20 border-b border-slate-200">
+      <section className="bg-white py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -594,7 +594,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── Expansion path ───────────────────────────────────────── */}
-      <section className="bg-slate-50 py-20 border-b border-slate-200">
+      <section className="bg-slate-50 py-12 border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -656,7 +656,7 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────── */}
-      <section className="bg-slate-900 py-20">
+      <section className="bg-slate-900 py-12">
         <Container>
           <div className="mx-auto max-w-2xl text-center">
             <Shield className="mx-auto mb-5 h-8 w-8 text-blue-400" />

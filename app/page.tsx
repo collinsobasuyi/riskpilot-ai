@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="bg-slate-900 pt-28 pb-24">
+      <section className="bg-slate-900 pt-20 pb-14">
         <Container>
           <div className="mx-auto max-w-4xl">
 
@@ -101,7 +101,7 @@ export default function Home() {
       </div>
 
       {/* ── The Problem ───────────────────────────────────────────── */}
-      <section id="problem" className="scroll-mt-20 py-24 bg-white">
+      <section id="problem" className="scroll-mt-20 py-14 bg-white">
         <Container>
           <div className="grid gap-16 lg:grid-cols-2 items-start">
 
@@ -190,9 +190,9 @@ export default function Home() {
       </section>
 
       {/* ── How It Works ──────────────────────────────────────────── */}
-      <section id="how-it-works" className="scroll-mt-20 py-24 bg-slate-50 border-y border-slate-200">
+      <section id="how-it-works" className="scroll-mt-20 py-14 bg-slate-50 border-y border-slate-200">
         <Container>
-          <div className="text-center mb-16">
+          <div className="text-center mb-10">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
               How It Works
             </p>
@@ -252,7 +252,7 @@ export default function Home() {
       </section>
 
       {/* ── Score Preview ─────────────────────────────────────────── */}
-      <section id="score" className="scroll-mt-20 py-24 bg-white">
+      <section id="score" className="scroll-mt-20 py-14 bg-white">
         <Container>
           <div className="grid items-start gap-16 lg:grid-cols-2">
 
@@ -405,9 +405,9 @@ export default function Home() {
       </section>
 
       {/* ── Industries ────────────────────────────────────────────── */}
-      <section id="industries" className="scroll-mt-20 py-24 bg-slate-50 border-y border-slate-200">
+      <section id="industries" className="scroll-mt-20 py-14 bg-slate-50 border-y border-slate-200">
         <Container>
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">Industries</p>
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
               Built for regulated financial firms.
@@ -471,7 +471,7 @@ export default function Home() {
       </section>
 
       {/* ── Credibility ───────────────────────────────────────────── */}
-      <section className="py-16 bg-white border-b border-slate-200">
+      <section className="py-10 bg-white border-b border-slate-200">
         <Container>
           <div className="mx-auto max-w-3xl">
             <div className="grid gap-8 sm:grid-cols-3 text-center sm:text-left">
@@ -502,7 +502,7 @@ export default function Home() {
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
-      <footer className="border-t border-slate-200 bg-slate-900 py-12">
+      <footer className="border-t border-slate-200 bg-slate-900 py-10">
         <Container>
           <div className="grid gap-8 md:grid-cols-4">
             <div className="md:col-span-2">
