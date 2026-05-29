@@ -1,5 +1,9 @@
 // lib/risk/schema.ts
 
+import type { DataSensitivity, DecisionAuthority } from "./types";
+
+export type { DataSensitivity, DecisionAuthority };
+
 export type IndustrySector =
   | "financial"
   | "healthcare"
@@ -13,8 +17,6 @@ export type IndustrySector =
 
 export type CompanySize = "1-10" | "11-50" | "51-200" | "201-500" | "500+";
 export type FinancialImpactTier = "under_100k" | "100k_to_1m" | "over_1m" | "legal" | "harm";
-export type DecisionAuthority = "none" | "partial" | "full";
-export type DataSensitivity = "none" | "basic" | "sensitive";
 export type AiMaturity = "pre-production" | "production" | "multiple" | "decommissioning";
 export type DeploymentType = "internal" | "customer" | "both" | "third-party-api" | "self-hosted";
 export type SystematicRisk = "isolated" | "batch" | "global";
