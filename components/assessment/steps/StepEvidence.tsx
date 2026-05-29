@@ -9,11 +9,9 @@ import { SectionTitle } from "../SectionTitle";
 export function StepEvidence({
   data,
   onChange,
-  onArrayChange,
 }: {
   data: AssessmentFormData;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
-  onArrayChange: (name: string, value: string) => void;
 }) {
   return (
     <div className="space-y-8">

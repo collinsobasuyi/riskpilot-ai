@@ -22,12 +22,12 @@ export function StepFirmDetails({
         <div className="space-y-5">
           <div>
             <Label>Legal entity name</Label>
-            <TextInput name="companyName" value={data.companyName} onChange={onChange} placeholder="e.g. Acme Financial Ltd" />
+            <TextInput name="companyName" value={data.companyName} onChange={onChange} placeholder="e.g. Acme Financial Ltd" error={errors.companyName} />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label required>Industry sector</Label>
-              <Select name="industry" value={data.industry} onChange={onChange}>
+              <Select name="industry" value={data.industry} onChange={onChange} error={errors.industry}>
                 <option value="financial">Financial Services</option>
                 <option value="insurance">Insurance</option>
                 <option value="healthcare">Healthcare</option>
