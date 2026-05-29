@@ -59,9 +59,6 @@ export interface AssessmentFormData {
 
   purpose?: string;
 
-  wantsEmailCopy: boolean;
-  contactEmail: string;
-
   systemName: string;
   aiUseCase: string;
   aiMaturity: AiMaturity;
@@ -156,9 +153,6 @@ export const DEFAULT_ASSESSMENT_FORM: AssessmentFormData = {
   regulator: "none",
 
   purpose: "",
-
-  wantsEmailCopy: false,
-  contactEmail: "",
 
   systemName: "",
   aiUseCase: "",
@@ -269,10 +263,6 @@ export function safeLocalStorageRemove(key: string): void {
 
 export function makeAssessmentId(prefix = "asmt") {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-}
-
-export function isValidEmail(email: string) {
-  return /^\S+@\S+\.\S+$/.test(email);
 }
 
 export function toggleExclusive(

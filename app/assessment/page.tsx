@@ -15,7 +15,6 @@ import {
   FileText,
   FileCheck,
   Database,
-  Globe,
   AlertTriangle,
 } from "lucide-react";
 import Container from "../../components/layout/Container";
@@ -26,7 +25,6 @@ import {
   DRAFT_KEY,
   SUBMISSION_KEY,
   calculatePreliminaryStatus,
-  isValidEmail,
   makeAssessmentId,
   safeJsonParse,
   safeLocalStorageGet,
@@ -247,23 +245,6 @@ function StepFirmDetails({ data, errors, onChange }: {
         </div>
       </div>
 
-      <div className="rounded-sm border border-slate-200 bg-white p-6">
-        <SectionTitle icon={<Globe className="h-4 w-4" />} title="Email Copy (Optional)" />
-        <div className="space-y-4">
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700">
-            <input type="checkbox" name="wantsEmailCopy" checked={data.wantsEmailCopy} onChange={onChange}
-              className="h-4 w-4 rounded-sm border-slate-300 text-blue-700" />
-            <span>Send me a copy of the results by email</span>
-          </label>
-          {data.wantsEmailCopy && (
-            <div>
-              <Label required>Work email address</Label>
-              <TextInput type="email" name="contactEmail" value={data.contactEmail} onChange={onChange}
-                placeholder="you@firm.com" error={errors.contactEmail} />
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
@@ -943,11 +924,6 @@ export default function AssessmentPage() {
 
   const validate = (s: number): { ok: boolean; newErrors: AssessmentErrors } => {
     const e: AssessmentErrors = {};
-    if (s === 0 && formData.wantsEmailCopy) {
-      const em = formData.contactEmail.trim();
-      if (!em) e.contactEmail = "Email required.";
-      else if (!isValidEmail(em)) e.contactEmail = "Enter a valid email address.";
-    }
     if (s === 1) {
       if (!formData.systemName.trim()) e.systemName = "System name is required.";
       const uc = formData.aiUseCase.trim();
