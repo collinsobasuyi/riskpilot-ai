@@ -872,6 +872,7 @@ export default function AssessmentPage() {
   const [errors, setErrors] = useState<AssessmentErrors>({});
   const [saved, setSaved] = useState(false);
   const [restored, setRestored] = useState(false);
+  const [saveFailed, setSaveFailed] = useState(false);
   const [formData, setFormData] = useState<AssessmentFormData>(DEFAULT_ASSESSMENT_FORM);
 
   const steps = useMemo(() => [
@@ -948,7 +949,9 @@ export default function AssessmentPage() {
   };
 
   const saveDraft = () => {
-    if (safeLocalStorageSet(DRAFT_KEY, JSON.stringify(formData))) {
+    const saved = safeLocalStorageSet(DRAFT_KEY, JSON.stringify(formData));
+    setSaveFailed(!saved);
+    if (saved) {
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     }
@@ -1030,6 +1033,21 @@ export default function AssessmentPage() {
         <div className="border-b border-red-200 bg-red-50 px-4 py-2 text-center text-xs text-red-700">
           <AlertCircle className="mr-1 inline h-3.5 w-3.5" />
           {errors.form}
+        </div>
+      )}
+      {saveFailed && (
+        <div className="mb-4 flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <span className="shrink-0 font-semibold">⚠</span>
+          <span>
+            Draft could not be saved — your browser storage may be full. Your progress is not
+            persisted.{" "}
+            <button
+              onClick={() => setSaveFailed(false)}
+              className="ml-1 underline hover:no-underline"
+            >
+              Dismiss
+            </button>
+          </span>
         </div>
       )}
 
