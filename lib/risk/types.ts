@@ -31,17 +31,6 @@ export interface RiskAssessmentInput {
   customerFacing: boolean;
 }
 
-// Extended assessment input for future growth
-export interface EnhancedAssessmentInput extends RiskAssessmentInput {
-  title?: string;
-  additionalContext?: string;
-  teamMembers?: string[];
-  departments?: string[];
-  hasExistingGovernance?: boolean;
-  annualRevenue?: string;
-  employeeCount?: number;
-}
-
 // Risk driver
 export interface RiskDriver {
   id: string;
@@ -83,65 +72,6 @@ export interface AssessmentResult {
   recommendations?: string[];
 }
 
-// Extended result for future persistence/reporting
-export interface EnhancedAssessmentResult extends AssessmentResult {
-  id?: string;
-  assessmentDate: Date;
-  expiresAt: Date;
-  assessmentId: string;
-  scoreBreakdown?: {
-    decisionAuthority: number;
-    impactLevel: number;
-    dataSensitivity: number;
-    customerFacing: number;
-  };
-  nextReviewDate?: Date;
-  complianceFrameworks?: string[];
-  industryBenchmarks?: {
-    averageScore: number;
-    percentileRank?: number;
-  };
-}
-
-// Assessment record for storage
-export interface AssessmentRecord {
-  id: string;
-  userId: string;
-  title: string;
-  status: AssessmentStatus;
-  industry: string;
-  aiUseCase: string;
-  decisionAuthority: DecisionAuthority;
-  impactLevel: ImpactLevel;
-  dataSensitivity: DataSensitivity;
-  customerFacing: boolean;
-  additionalContext?: string;
-  inherentRiskScore?: number;
-  controlMaturityScore?: number;
-  overallReadinessScore?: number;
-  inherentRiskLevel?: InherentRiskLevel;
-  readinessLevel?: ReadinessLevel;
-  riskDrivers?: unknown;
-  recommendations?: unknown;
-  createdAt: Date;
-  updatedAt: Date;
-  completedAt?: Date;
-  expiresAt?: Date;
-}
-
-// Export/report options
-export interface ExportOptions {
-  format: "PDF" | "CSV" | "JSON";
-  includeRecommendations: boolean;
-  includeDrivers: boolean;
-  includeMetadata: boolean;
-  branding?: {
-    companyName?: string;
-    logo?: string;
-    primaryColor?: string;
-  };
-}
-
 // Validation error
 export interface ValidationError {
   field: keyof RiskAssessmentInput;
@@ -159,59 +89,6 @@ export interface ApiResponse<T> {
     timestamp: string;
     version: string;
   };
-}
-
-// Dashboard statistics
-export interface DashboardStats {
-  totalAssessments: number;
-  averageInherentRiskScore: number;
-  averageReadinessScore: number;
-  riskDistribution: {
-    low: number;
-    moderate: number;
-    high: number;
-  };
-  readinessDistribution: {
-    weak: number;
-    developing: number;
-    strong: number;
-  };
-  recentAssessments: AssessmentRecord[];
-  expiringAssessments: AssessmentRecord[];
-  topRiskDrivers: Array<{ name: string; count: number }>;
-}
-
-// Industry benchmark
-export interface IndustryBenchmark {
-  industry: string;
-  averageInherentRiskScore: number;
-  averageReadinessScore: number;
-  sampleSize: number;
-  percentile25: number;
-  percentile50: number;
-  percentile75: number;
-  lastUpdated: Date;
-}
-
-// User preferences
-export interface UserPreferences {
-  userId: string;
-  defaultExportFormat: "PDF" | "CSV" | "JSON";
-  emailNotifications: boolean;
-  reminderFrequency: "weekly" | "monthly" | "quarterly";
-  theme: "light" | "dark" | "system";
-}
-
-// Notification
-export interface Notification {
-  id: string;
-  userId: string;
-  type: "ASSESSMENT_EXPIRING" | "ASSESSMENT_COMPLETED" | "RECOMMENDATION_UPDATE";
-  title: string;
-  message: string;
-  read: boolean;
-  createdAt: Date;
-  metadata?: Record<string, unknown>;
 }
 
 // Reusable constants
