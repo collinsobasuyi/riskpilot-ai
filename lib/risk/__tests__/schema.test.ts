@@ -50,7 +50,7 @@ describe("calculatePreliminaryStatus", () => {
     expect(result.status).toBe("High Risk");
   });
 
-  it("returns Low Risk tier when score >= 60 with no negative signals", () => {
+  it("returns Medium Risk at baseline with no negative signals", () => {
     const result = calculatePreliminaryStatus({
       ...base,
       decisionAuthority: "none",
@@ -62,7 +62,7 @@ describe("calculatePreliminaryStatus", () => {
       externalVerification: "external-audit",
       trainingFrequency: "quarterly",
     });
-    expect(result.status).toBe("Low Risk");
+    expect(result.status).toBe("Medium Risk");
   });
 
   it("concerns array has at most 4 entries", () => {

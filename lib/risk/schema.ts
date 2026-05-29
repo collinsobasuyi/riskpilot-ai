@@ -434,30 +434,6 @@ export function calculatePreliminaryStatus(formData: AssessmentFormData): Prelim
     concerns.push("No external audit for regulated entity");
   }
 
-  // Positive score bonuses for strong governance signals
-  if (formData.documentedProcess) {
-    score += 10;
-  }
-
-  if (formData.hasModelCards) {
-    score += 5;
-  }
-
-  if (formData.hasExternalAudit) {
-    score += 10;
-  }
-
-  if (formData.externalVerification === "external-audit") {
-    score += 10;
-  }
-
-  if (
-    formData.trainingFrequency === "quarterly" ||
-    formData.trainingFrequency === "annually"
-  ) {
-    score += 5;
-  }
-
   score = Math.max(0, Math.min(100, score));
 
   const status: PreliminaryStatus["status"] =
