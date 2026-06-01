@@ -195,7 +195,7 @@ export default function AboutPage() {
                   <div className={`text-xs font-bold uppercase tracking-widest mb-2 ${item.color}`}>
                     {item.num} — {item.label}
                   </div>
-                  <p className="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+                  <p className="text-base text-slate-600 leading-relaxed">{item.body}</p>
                 </div>
               ))}
             </div>
@@ -269,8 +269,8 @@ export default function AboutPage() {
                 <div key={item.title} className="flex gap-4 rounded-sm border border-slate-200 bg-white p-5">
                   <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                    <p className="mt-1 text-sm text-slate-500 leading-relaxed">{item.body}</p>
+                    <p className="text-base font-semibold text-slate-900">{item.title}</p>
+                    <p className="mt-1 text-base text-slate-500 leading-relaxed">{item.body}</p>
                   </div>
                 </div>
               ))}
@@ -317,7 +317,7 @@ export default function AboutPage() {
                         {f.icon}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-slate-900">{f.firm}</p>
+                        <p className="text-base font-bold text-slate-900">{f.firm}</p>
                         <p className="text-xs text-slate-500">{f.year} · {f.regulator}</p>
                       </div>
                     </div>
@@ -329,10 +329,10 @@ export default function AboutPage() {
                       {f.penalty}
                     </div>
                   </div>
-                  <p className="text-sm text-slate-700 leading-relaxed mb-3">{f.what}</p>
+                  <p className="text-base text-slate-700 leading-relaxed mb-3">{f.what}</p>
                   <div className="flex items-start gap-2 pt-3 border-t border-slate-200">
                     <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-700" />
-                    <p className="text-xs text-slate-600 leading-relaxed">
+                    <p className="text-base text-slate-600 leading-relaxed">
                       <span className="font-semibold text-blue-700">Governance lesson: </span>
                       {f.why}
                     </p>
@@ -344,7 +344,7 @@ export default function AboutPage() {
             <div className="mt-8 rounded-sm border border-blue-200 bg-blue-50 p-5">
               <div className="flex items-start gap-3">
                 <Shield className="mt-0.5 h-4 w-4 shrink-0 text-blue-700" />
-                <p className="text-sm text-blue-900">
+                <p className="text-base text-blue-900">
                   <span className="font-semibold">Common thread across every case:</span> the AI
                   system made or influenced consequential decisions without adequate documentation,
                   monitoring, or oversight. RiskPilot is designed to surface and score exactly
@@ -378,13 +378,13 @@ export default function AboutPage() {
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <p className="text-xs font-bold text-blue-700 uppercase tracking-widest">{r.label}</p>
-                      <p className="text-sm font-semibold text-slate-900 mt-0.5">{r.title}</p>
+                      <p className="text-base font-semibold text-slate-900 mt-0.5">{r.title}</p>
                     </div>
                     <span className="rounded-sm bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 shrink-0 ml-2">
                       {r.urgency}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 leading-relaxed">{r.body}</p>
+                  <p className="text-sm text-slate-500 leading-relaxed">{r.body}</p>
                 </div>
               ))}
             </div>
@@ -437,8 +437,8 @@ export default function AboutPage() {
                     {item.icon}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                    <p className="mt-1 text-sm text-slate-500 leading-relaxed">{item.body}</p>
+                    <p className="text-base font-semibold text-slate-900">{item.title}</p>
+                    <p className="mt-1 text-base text-slate-500 leading-relaxed">{item.body}</p>
                   </div>
                 </div>
               ))}
@@ -472,7 +472,7 @@ export default function AboutPage() {
                   "Received or expects an FCA supervisory letter on AI",
                   "Running AI models in production without a formal governance framework",
                 ].map((item) => (
-                  <div key={item} className="flex items-start gap-2 text-sm text-slate-700">
+                  <div key={item} className="flex items-start gap-2 text-base text-slate-700">
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                     {item}
                   </div>
@@ -490,15 +490,15 @@ export default function AboutPage() {
                   CR
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-900">Compliance or Risk Lead at a mid-size regulated firm</p>
-                  <p className="mt-1 text-sm text-slate-600 leading-relaxed">
+                  <p className="text-base font-bold text-slate-900">Compliance or Risk Lead at a mid-size regulated firm</p>
+                  <p className="mt-1 text-base text-slate-600 leading-relaxed">
                     Probably a Head of Compliance, Chief Risk Officer, or Head of Model Risk at a firm
                     between 50 and 300 employees. They know AI governance is a problem. They don&apos;t
                     have the budget for a Big Four engagement. They have a renewal conversation coming
                     up, a board that is starting to ask questions, or a regulator letter sitting in
                     their inbox.
                   </p>
-                  <p className="mt-3 text-sm text-slate-600 leading-relaxed">
+                  <p className="mt-3 text-base text-slate-600 leading-relaxed">
                     They need something structured, fast, and credible — not a 200-page framework
                     document, but a scored assessment with a clear action list and something they
                     can put in front of their broker, auditor, or board.
@@ -511,7 +511,7 @@ export default function AboutPage() {
                     ].map((x) => (
                       <div key={x.label} className="rounded-sm border border-blue-200 bg-white px-3 py-2">
                         <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">{x.label}</p>
-                        <p className="text-xs text-slate-700 mt-0.5">{x.value}</p>
+                        <p className="text-sm text-slate-700 mt-0.5">{x.value}</p>
                       </div>
                     ))}
                   </div>
@@ -554,7 +554,7 @@ export default function AboutPage() {
                       "Renewal conversations reference the evidence pack",
                       "Repeat assessments as the firm's AI changes or governance improves",
                     ].map((s) => (
-                      <li key={s} className="flex items-start gap-2 text-sm text-slate-600">
+                      <li key={s} className="flex items-start gap-2 text-base text-slate-600">
                         <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-green-600" />
                         {s}
                       </li>
@@ -570,7 +570,7 @@ export default function AboutPage() {
                       "Buyers say they already have this covered by their Big Four advisor",
                       "Insurers won't accept a startup's assessment as evidence",
                     ].map((s) => (
-                      <li key={s} className="flex items-start gap-2 text-sm text-slate-600">
+                      <li key={s} className="flex items-start gap-2 text-base text-slate-600">
                         <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
                         {s}
                       </li>
@@ -581,7 +581,7 @@ export default function AboutPage() {
 
               <div className="rounded-sm border border-slate-200 p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">What we are not claiming</p>
-                <p className="text-sm text-slate-600 leading-relaxed">
+                <p className="text-base text-slate-600 leading-relaxed">
                   RiskPilot is not a legal opinion, a regulatory audit, or a guarantee of
                   coverage. It is a structured evidence tool. The same way a fire risk assessment
                   does not make your building fireproof — it makes it insurable, defensible, and
@@ -645,8 +645,8 @@ export default function AboutPage() {
                     {item.phase}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{item.title}</p>
-                    <p className="mt-0.5 text-sm text-slate-500">{item.body}</p>
+                    <p className="text-base font-semibold text-slate-900">{item.title}</p>
+                    <p className="mt-0.5 text-base text-slate-500">{item.body}</p>
                   </div>
                 </div>
               ))}
