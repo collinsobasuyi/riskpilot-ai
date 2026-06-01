@@ -59,18 +59,17 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="mt-4 text-sm text-slate-500">
+            <p className="mt-4 text-base text-slate-500">
               Used for PI renewal preparation, FCA compliance reviews, board AI sign-off, and internal risk assurance.
             </p>
 
             {/* Trust bar */}
-            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-slate-700/60 pt-8 text-xs font-medium tracking-wide text-slate-500 uppercase">
+            <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-slate-700/60 pt-8 text-xs font-medium tracking-wide text-slate-500 uppercase">
               {[
                 "FCA / PRA aligned",
                 "Compliance, Risk & Insurance ready",
                 "10-minute assessment",
                 "Evidence-grade output",
-                "No commitment",
               ].map((t) => (
                 <div key={t} className="flex items-center gap-1.5">
                   <div className="h-1 w-1 rounded-full bg-blue-600" />
@@ -125,7 +124,7 @@ export default function Home() {
               </p>
 
               <div className="mt-8 p-4 bg-amber-50 border-l-4 border-amber-500">
-                <p className="text-sm font-medium text-amber-900">
+                <p className="text-base font-medium text-amber-900">
                   Without documented governance, firms risk coverage exclusions, higher premiums,
                   or being uninsurable for specific AI use cases entirely.
                 </p>
@@ -177,8 +176,8 @@ export default function Home() {
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                       <div>
-                        <p className="text-sm font-semibold text-slate-900">{item.q}</p>
-                        <p className="mt-1 text-xs text-slate-500">{item.note}</p>
+                        <p className="text-base font-semibold text-slate-900">{item.q}</p>
+                        <p className="mt-1 text-sm text-slate-500">{item.note}</p>
                       </div>
                     </div>
                   </div>
@@ -237,7 +236,7 @@ export default function Home() {
                   {item.step}
                 </div>
                 <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
-                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{item.body}</p>
+                <p className="mt-2 text-base text-slate-500 leading-relaxed">{item.body}</p>
                 <Link
                   href={item.href}
                   className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
@@ -299,8 +298,8 @@ export default function Home() {
                       {x.icon}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-slate-900">{x.title}</p>
-                      <p className="mt-0.5 text-sm text-slate-500">{x.body}</p>
+                      <p className="text-base font-semibold text-slate-900">{x.title}</p>
+                      <p className="mt-0.5 text-base text-slate-500">{x.body}</p>
                     </div>
                   </div>
                 ))}
@@ -372,15 +371,15 @@ export default function Home() {
                   Coverage Implications
                 </p>
                 <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-xs text-slate-700">
+                  <li className="flex items-start gap-2 text-sm text-slate-700">
                     <CheckCircle2 className="h-3.5 w-3.5 text-green-600 mt-0.5 shrink-0" />
                     Eligible for PI coverage — enhanced underwriting applies
                   </li>
-                  <li className="flex items-start gap-2 text-xs text-slate-700">
+                  <li className="flex items-start gap-2 text-sm text-slate-700">
                     <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
                     Exclusion: Autonomous decisions without documented oversight
                   </li>
-                  <li className="flex items-start gap-2 text-xs text-slate-700">
+                  <li className="flex items-start gap-2 text-sm text-slate-700">
                     <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
                     Enhanced underwriting required for credit decisioning models
                   </li>
@@ -452,14 +451,14 @@ export default function Home() {
                 <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-sm border border-slate-200 bg-slate-50 text-blue-700">
                   {item.icon}
                 </div>
-                <h3 className="text-sm font-bold text-slate-900">{item.title}</h3>
-                <p className="mt-1.5 text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+                <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
+                <p className="mt-1.5 text-sm text-slate-500 leading-relaxed">{item.desc}</p>
                 <div className="mt-4 pt-4 border-t border-slate-100">
-                  <p className="text-xs text-amber-700 font-medium">{item.risk}</p>
+                  <p className="text-sm text-amber-700 font-medium">{item.risk}</p>
                 </div>
                 <Link
                   href="/assessment"
-                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700 hover:text-blue-800 transition-colors"
+                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
                 >
                   Assess this use case
                   <ChevronRight className="h-3 w-3" />
@@ -479,7 +478,7 @@ export default function Home() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
                   Why RiskPilot
                 </p>
-                <p className="text-sm text-slate-500 leading-relaxed">
+                <p className="text-base text-slate-500 leading-relaxed">
                   Built by someone with direct experience in regulated financial environments
                   and the London insurance market.
                 </p>
@@ -491,7 +490,7 @@ export default function Home() {
                   { title: "London Market", body: "Direct experience with insurance placement, underwriting criteria, and renewal processes." },
                 ].map((c) => (
                   <div key={c.title} className="border-l border-slate-200 pl-4">
-                    <p className="text-sm font-semibold text-slate-900">{c.title}</p>
+                    <p className="text-base font-semibold text-slate-900">{c.title}</p>
                     <p className="mt-1 text-xs text-slate-500 leading-relaxed">{c.body}</p>
                   </div>
                 ))}
