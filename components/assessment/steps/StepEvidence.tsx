@@ -36,13 +36,13 @@ export function StepEvidence({
             },
           ].map((item) => (
             <div key={item.name} className="space-y-2">
-              <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-700">
+              <label className="flex cursor-pointer items-start gap-3 text-base text-slate-700">
                 <input type="checkbox" name={item.name}
                   checked={data[item.name as keyof AssessmentFormData] as boolean}
                   onChange={onChange} className="mt-0.5 h-4 w-4 rounded-sm border-slate-300 text-blue-700" />
                 <div>
                   <span className="font-medium text-slate-900">{item.label}</span>
-                  <p className="text-xs text-slate-500">{item.hint}</p>
+                  <p className="text-sm text-slate-500">{item.hint}</p>
                 </div>
               </label>
               {data[item.name as keyof AssessmentFormData] && (

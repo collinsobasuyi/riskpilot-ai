@@ -51,7 +51,7 @@ export function StepFirmDetails({
             </div>
           </div>
           <div>
-            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700">
+            <label className="flex cursor-pointer items-center gap-2.5 text-base text-slate-700">
               <input type="checkbox" name="regulatedEntity" checked={data.regulatedEntity} onChange={onChange}
                 className="h-4 w-4 rounded-sm border-slate-300 text-blue-700" />
               <span>This is an FCA / PRA regulated entity</span>

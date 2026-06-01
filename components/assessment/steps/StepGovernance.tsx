@@ -37,7 +37,7 @@ export function StepGovernance({
               { name: "smfAccountability", label: "Named Senior Manager (SMF) accountable for this AI system" },
               { name: "incidentResponsePlan", label: "Documented incident response plan for AI failures" },
             ].map((cb) => (
-              <label key={cb.name} className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700">
+              <label key={cb.name} className="flex cursor-pointer items-center gap-2.5 text-base text-slate-700">
                 <input type="checkbox" name={cb.name}
                   checked={data[cb.name as keyof AssessmentFormData] as boolean}
                   onChange={onChange} className="h-4 w-4 rounded-sm border-slate-300 text-blue-700" />
@@ -149,7 +149,7 @@ export function StepGovernance({
               </Select>
             </div>
           </div>
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-slate-700">
+          <label className="flex cursor-pointer items-center gap-2.5 text-base text-slate-700">
             <input type="checkbox" name="monitoringHallucination"
               checked={data.monitoringHallucination ?? false} onChange={onChange}
               className="h-4 w-4 rounded-sm border-slate-300 text-blue-700" />
