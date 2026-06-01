@@ -71,7 +71,7 @@ export default function ResultsPage() {
       <section className="py-16">
         <Container>
           <Card title="No assessment found">
-            <p className="text-sm text-slate-600">
+            <p className="text-base text-slate-600 leading-relaxed">
               We couldn&apos;t find a submitted assessment. Complete a new assessment to generate
               your AI Governance Score.
             </p>
@@ -121,7 +121,7 @@ export default function ResultsPage() {
 
             {/* Summary */}
             <Card title="Executive Summary">
-              <p className="text-sm text-slate-700 leading-relaxed">{results.summary}</p>
+              <p className="text-base text-slate-700 leading-relaxed">{results.summary}</p>
               <p className="mt-2 text-xs text-slate-400">Assessed {assessmentAge}</p>
             </Card>
 
@@ -162,10 +162,10 @@ export default function ResultsPage() {
             {/* Footer CTA */}
             <div className="rounded-sm border border-slate-200 bg-white p-6 text-center print:hidden">
               <Shield className="mx-auto h-8 w-8 text-blue-700 mb-3" />
-              <p className="text-sm font-semibold text-slate-900 mb-1">
+              <p className="text-base font-semibold text-slate-900 mb-1">
                 Want to discuss these results with an expert?
               </p>
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-base text-slate-500 leading-relaxed mb-4">
                 Book a call to review your governance gaps and renewal strategy.
               </p>
               <ButtonLink href="/about" variant="primary">

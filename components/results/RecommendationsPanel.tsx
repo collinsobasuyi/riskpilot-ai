@@ -13,7 +13,7 @@ function RecItem({ text, level }: { text: string; level: "critical" | "high" | "
       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
     );
   return (
-    <li className="flex items-start gap-2 text-sm text-slate-700">
+    <li className="flex items-start gap-2 text-base text-slate-700 leading-relaxed">
       {icon}
       {text}
     </li>

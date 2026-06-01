@@ -4,7 +4,7 @@ type Benchmark = { percentile: number; averageScore: number; comparison: string 
 
 export function BenchmarkPanel({ benchmark, industry }: { benchmark: Benchmark; industry: string }) {
   return (
-    <div className="space-y-2 text-sm text-slate-700">
+    <div className="space-y-2 text-base text-slate-700 leading-relaxed">
       <p>
         <span className="font-semibold">Industry average ({industry}):</span>{" "}
         {benchmark.averageScore}/100
