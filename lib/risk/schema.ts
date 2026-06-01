@@ -142,6 +142,33 @@ export interface AssessmentFormData {
 
 export type AssessmentErrors = Partial<Record<keyof AssessmentFormData | "form", string>>;
 
+export type StoredSubmission = {
+  id: string;
+  submittedAt: string;
+  data: AssessmentFormData;
+};
+
+export const HISTORY_KEY = "assessmentHistory_v1";
+
+export function buildUpdatedHistory(
+  current: StoredSubmission[],
+  entry: StoredSubmission,
+  maxLength = 10
+): StoredSubmission[] {
+  return [entry, ...current].slice(0, maxLength);
+}
+
+export function getHistory(): StoredSubmission[] {
+  const raw = safeLocalStorageGet(HISTORY_KEY);
+  return safeJsonParse<StoredSubmission[]>(raw) ?? [];
+}
+
+export function appendToHistory(entry: StoredSubmission): void {
+  const current = getHistory();
+  const updated = buildUpdatedHistory(current, entry);
+  safeLocalStorageSet(HISTORY_KEY, JSON.stringify(updated));
+}
+
 export const DRAFT_KEY = "assessmentDraft_v1";
 export const SUBMISSION_KEY = "assessmentSubmission_v1";
 
