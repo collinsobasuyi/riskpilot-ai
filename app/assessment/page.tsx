@@ -9,8 +9,11 @@ import {
   AssessmentFormData,
   DEFAULT_ASSESSMENT_FORM,
   DRAFT_KEY,
+  StoredSubmission,
   SUBMISSION_KEY,
+  appendToHistory,
   calculatePreliminaryStatus,
+  getHistory,
   makeAssessmentId,
   safeJsonParse,
   safeLocalStorageGet,
@@ -51,12 +54,20 @@ export default function AssessmentPage() {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [lastEntry, setLastEntry] = useState<StoredSubmission | null>(null);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   // Restore draft
   useEffect(() => {
     const raw = safeLocalStorageGet(DRAFT_KEY);
     const parsed = safeJsonParse<AssessmentFormData>(raw);
     if (parsed) setFormData(parsed);
+  }, []);
+
+  // Load last submission for history banner
+  useEffect(() => {
+    const history = getHistory();
+    if (history.length > 0) setLastEntry(history[0]);
   }, []);
 
   // Save draft
@@ -129,7 +140,9 @@ export default function AssessmentPage() {
     }
     setSubmitting(true);
     const id = makeAssessmentId();
-    safeLocalStorageSet(SUBMISSION_KEY, JSON.stringify({ id, submittedAt: new Date().toISOString(), data: formData }));
+    const submission: StoredSubmission = { id, submittedAt: new Date().toISOString(), data: formData };
+    safeLocalStorageSet(SUBMISSION_KEY, JSON.stringify(submission));
+    appendToHistory(submission);
     router.push("/results");
   }
 
@@ -161,6 +174,27 @@ export default function AssessmentPage() {
           <div className="mb-4">
             <StepIndicator steps={steps} current={step} onNavigate={goTo} />
           </div>
+
+          {/* Last score banner */}
+          {step === 0 && !bannerDismissed && lastEntry && (
+            <div className="mb-4 flex items-center justify-between gap-3 rounded-sm border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+              <span>
+                ↺ Last assessment:{" "}
+                <strong>{lastEntry.data.systemName || lastEntry.data.companyName}</strong>
+                {" — "}
+                <a href="/results" className="underline hover:no-underline font-semibold">
+                  View report →
+                </a>
+              </span>
+              <button
+                onClick={() => setBannerDismissed(true)}
+                className="shrink-0 text-blue-500 hover:text-blue-700 font-bold text-base leading-none"
+                aria-label="Dismiss"
+              >
+                ×
+              </button>
+            </div>
+          )}
 
           {/* Save failure banner */}
           {saveFailed && (
