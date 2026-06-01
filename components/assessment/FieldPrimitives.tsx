@@ -6,7 +6,7 @@ import { AlertCircle } from "lucide-react";
 export function FieldError({ msg }: { msg?: string }) {
   if (!msg) return null;
   return (
-    <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
+    <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
       <AlertCircle className="h-3 w-3 shrink-0" />
       {msg}
     </p>
@@ -15,7 +15,7 @@ export function FieldError({ msg }: { msg?: string }) {
 
 export function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-slate-500">
+    <label className="mb-1.5 block text-sm font-semibold uppercase tracking-widest text-slate-500">
       {children}
       {required && <span className="ml-0.5 text-red-500">*</span>}
     </label>
@@ -23,7 +23,7 @@ export function Label({ children, required }: { children: React.ReactNode; requi
 }
 
 export function Hint({ children }: { children: React.ReactNode }) {
-  return <p className="mb-2 text-xs text-slate-400">{children}</p>;
+  return <p className="mb-2 text-sm text-slate-400">{children}</p>;
 }
 
 const fieldBase =
@@ -181,8 +181,8 @@ export function RadioGroup({
             className="mt-0.5 accent-blue-700"
           />
           <div>
-            <p className="text-sm font-medium text-slate-800">{opt.label}</p>
-            {opt.hint && <p className="text-xs text-slate-500">{opt.hint}</p>}
+            <p className="text-base font-medium text-slate-800">{opt.label}</p>
+            {opt.hint && <p className="text-sm text-slate-500">{opt.hint}</p>}
           </div>
         </label>
       ))}
