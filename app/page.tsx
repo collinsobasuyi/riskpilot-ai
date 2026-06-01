@@ -57,6 +57,12 @@ export default function Home() {
               >
                 Read the thesis
               </Link>
+              <Link
+                href="/results?demo=1"
+                className="inline-flex items-center gap-2 rounded-sm border border-slate-700 bg-transparent px-6 py-3 text-sm font-semibold text-slate-400 hover:border-slate-500 hover:text-slate-300 transition-colors"
+              >
+                See sample report
+              </Link>
             </div>
 
             <p className="mt-4 text-base text-slate-500">
