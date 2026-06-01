@@ -76,7 +76,7 @@ export default function Navbar() {
             <Link href="/" className="flex items-center gap-2.5 shrink-0">
               <Shield className="h-5 w-5 text-blue-700" />
               <span className="font-bold text-slate-900 tracking-tight">RiskPilot AI</span>
-              <span className="hidden sm:inline-block text-xs text-slate-400 font-normal border-l border-slate-200 pl-2.5 ml-0.5">
+              <span className="hidden sm:inline-block text-sm text-slate-400 font-normal border-l border-slate-200 pl-2.5 ml-0.5">
                 AI Governance
               </span>
             </Link>
@@ -87,7 +87,7 @@ export default function Navbar() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className={`relative px-3 py-1.5 text-sm font-medium rounded-sm transition-colors ${
+                  className={`relative px-3 py-1.5 text-base font-medium rounded-sm transition-colors ${
                     isActive(l.href)
                       ? "text-blue-700 bg-blue-50"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
@@ -105,7 +105,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3 shrink-0">
               <Link
                 href="/assessment"
-                className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-sm font-semibold transition-colors shadow-sm ${
+                className={`inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-base font-semibold transition-colors shadow-sm ${
                   pathname === "/assessment"
                     ? "bg-blue-800 text-white"
                     : "bg-blue-700 text-white hover:bg-blue-800"
@@ -135,7 +135,7 @@ export default function Navbar() {
                     key={l.href}
                     href={l.href}
                     onClick={() => setMenuOpen(false)}
-                    className={`px-5 py-3.5 text-sm font-medium transition-colors ${
+                    className={`px-5 py-3.5 text-base font-medium transition-colors ${
                       isActive(l.href)
                         ? "text-blue-700 bg-blue-50 border-l-2 border-blue-700"
                         : "text-slate-700 hover:text-blue-700 hover:bg-slate-50"
@@ -148,7 +148,7 @@ export default function Navbar() {
                   <Link
                     href="/assessment"
                     onClick={() => setMenuOpen(false)}
-                    className="flex items-center justify-center gap-2 rounded-sm bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800 transition-colors"
+                    className="flex items-center justify-center gap-2 rounded-sm bg-blue-700 px-4 py-2.5 text-base font-semibold text-white hover:bg-blue-800 transition-colors"
                   >
                     Get Your Governance Score
                     <ArrowRight className="h-3.5 w-3.5" />
