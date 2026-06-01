@@ -78,6 +78,7 @@ export default function AssessmentPage() {
   );
 
   const preliminary = useMemo(() => calculatePreliminaryStatus(formData), [formData]);
+  const liveReady = step > 0 || formData.companyName.trim().length > 0;
 
   const multiFields: Record<string, string[]> = {
     aiCapabilities: [],
@@ -176,7 +177,7 @@ export default function AssessmentPage() {
 
           {/* Live risk badge */}
           <div className="mb-4">
-            <LiveRiskBadge preliminary={preliminary} />
+            <LiveRiskBadge preliminary={preliminary} ready={liveReady} />
           </div>
 
           {/* Step content */}
