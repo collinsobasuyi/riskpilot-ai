@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Printer, Shield } from "lucide-react";
+import { ArrowLeft, Copy, Check, Printer, Shield } from "lucide-react";
 import Container from "../../components/layout/Container";
 import Card from "../../components/ui/Card";
 import ButtonLink from "../../components/ui/ButtonLink";
@@ -20,6 +20,9 @@ import { RecommendationsPanel } from "../../components/results/RecommendationsPa
 import { ComplianceGaps } from "../../components/results/ComplianceGaps";
 import { BenchmarkPanel } from "../../components/results/BenchmarkPanel";
 import { CoveragePanel } from "../../components/results/CoveragePanel";
+import { DEMO_SUBMISSION } from "../../lib/risk/demo-data";
+import { encodeShareData, decodeShareData } from "../../lib/risk/share";
+import { ActionPlanPanel } from "../../components/results/ActionPlanPanel";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -47,8 +50,28 @@ type StoredSubmission = {
 export default function ResultsPage() {
   const [submission, setSubmission] = useState<StoredSubmission | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
+  const [isDemo, setIsDemo] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shared = params.get("s");
+    const demo = params.get("demo");
+
+    if (shared) {
+      const data = decodeShareData(shared);
+      if (data) {
+        setSubmission({ id: "shared", submittedAt: new Date().toISOString(), data });
+      }
+      return;
+    }
+
+    if (demo === "1") {
+      setSubmission(DEMO_SUBMISSION);
+      setIsDemo(true);
+      return;
+    }
+
     const raw = safeLocalStorageGet(SUBMISSION_KEY);
     const parsed = safeJsonParse<StoredSubmission>(raw);
     setSubmission(parsed);
@@ -65,6 +88,16 @@ export default function ResultsPage() {
   );
 
   const handlePrint = () => window.print();
+
+  function handleCopyLink() {
+    if (!submission) return;
+    const encoded = encodeShareData(submission.data);
+    const url = `${window.location.origin}/results?s=${encoded}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
 
   if (!submission || !results) {
     return (
@@ -102,14 +135,37 @@ export default function ResultsPage() {
                 <ArrowLeft className="h-4 w-4" />
                 New assessment
               </ButtonLink>
-              <button
-                onClick={handlePrint}
-                className="inline-flex items-center gap-1.5 rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
-              >
-                <Printer className="h-4 w-4" />
-                Print / Download
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+                  {copied ? "Copied!" : "Copy link"}
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="inline-flex items-center gap-1.5 rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  <Printer className="h-4 w-4" />
+                  Print / Download
+                </button>
+              </div>
             </div>
+
+            {/* Demo banner */}
+            {isDemo && (
+              <div className="flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800 print:hidden">
+                <span className="shrink-0 font-semibold">⚑</span>
+                <span>
+                  You&apos;re viewing a sample report.{" "}
+                  <Link href="/assessment" className="underline hover:no-underline font-semibold">
+                    Start your own assessment
+                  </Link>{" "}
+                  to generate real results.
+                </span>
+              </div>
+            )}
 
             {/* Report header */}
             <ReportHeader
@@ -149,6 +205,11 @@ export default function ResultsPage() {
               <RecommendationsPanel recommendations={results.recommendations} />
             </Card>
 
+            {/* 90-day action plan */}
+            <Card title="Your 90-Day Action Plan">
+              <ActionPlanPanel recommendations={results.recommendations} />
+            </Card>
+
             {/* Compliance gaps */}
             <Card title="Compliance Gaps">
               <ComplianceGaps gaps={results.complianceGaps} />
@@ -160,18 +221,20 @@ export default function ResultsPage() {
             </Card>
 
             {/* Footer CTA */}
-            <div className="rounded-sm border border-slate-200 bg-white p-6 text-center print:hidden">
-              <Shield className="mx-auto h-8 w-8 text-blue-700 mb-3" />
-              <p className="text-base font-semibold text-slate-900 mb-1">
-                Want to discuss these results with an expert?
-              </p>
-              <p className="text-base text-slate-500 leading-relaxed mb-4">
-                Book a call to review your governance gaps and renewal strategy.
-              </p>
-              <ButtonLink href="/about" variant="primary">
-                Book a consultation
-              </ButtonLink>
-            </div>
+            {!isDemo && (
+              <div className="rounded-sm border border-slate-200 bg-white p-6 text-center print:hidden">
+                <Shield className="mx-auto h-8 w-8 text-blue-700 mb-3" />
+                <p className="text-base font-semibold text-slate-900 mb-1">
+                  Want to discuss these results with an expert?
+                </p>
+                <p className="text-base text-slate-500 leading-relaxed mb-4">
+                  Book a call to review your governance gaps and renewal strategy.
+                </p>
+                <ButtonLink href="/about" variant="primary">
+                  Book a consultation
+                </ButtonLink>
+              </div>
+            )}
 
           </div>
         </Container>
