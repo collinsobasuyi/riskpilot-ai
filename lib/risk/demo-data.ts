@@ -1,11 +1,4 @@
-import type { AssessmentFormData } from "./schema";
-
-// Local type — matches the identical local type in app/results/page.tsx (structural compatibility)
-type StoredSubmission = {
-  id: string;
-  submittedAt: string;
-  data: AssessmentFormData;
-};
+import type { AssessmentFormData, StoredSubmission } from "./schema";
 
 export const DEMO_SUBMISSION: StoredSubmission = {
   id: "demo",
