@@ -8,7 +8,9 @@ import Card from "../../components/ui/Card";
 import ButtonLink from "../../components/ui/ButtonLink";
 import {
   AssessmentFormData,
+  StoredSubmission,
   SUBMISSION_KEY,
+  getHistory,
   safeJsonParse,
   safeLocalStorageGet,
 } from "../../lib/risk/schema";
@@ -23,6 +25,7 @@ import { CoveragePanel } from "../../components/results/CoveragePanel";
 import { DEMO_SUBMISSION } from "../../lib/risk/demo-data";
 import { encodeShareData, decodeShareData } from "../../lib/risk/share";
 import { ActionPlanPanel } from "../../components/results/ActionPlanPanel";
+import { AssessmentHistory } from "../../components/results/AssessmentHistory";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -37,26 +40,21 @@ function formatDate() {
   return new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
-type StoredSubmission = {
-  id: string;
-  submittedAt: string;
-  data: AssessmentFormData;
-};
-
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ResultsPage() {
   const [submission, setSubmission] = useState<StoredSubmission | null>(null);
   const printRef = useRef<HTMLDivElement>(null);
   const [isDemo, setIsDemo] = useState(false);
+  const [history, setHistory] = useState<StoredSubmission[]>([]);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const shared = params.get("s");
     const demo = params.get("demo");
+
+    setHistory(getHistory());
 
     if (shared) {
       const data = decodeShareData(shared);
@@ -86,6 +84,16 @@ export default function ResultsPage() {
     () => (submission ? daysAgoLabel(submission.submittedAt) : ""),
     [submission]
   );
+
+  const scoreDelta = useMemo(() => {
+    if (!submission || !results || isDemo || submission.id === "shared") return undefined;
+    const prev = history.find(
+      (e) => e.id !== submission.id && e.data.systemName === submission.data.systemName
+    );
+    if (!prev) return undefined;
+    const prevResults = computeResults(prev.data);
+    return results.riskScore - prevResults.riskScore;
+  }, [submission, results, history, isDemo]);
 
   const handlePrint = () => window.print();
 
@@ -173,6 +181,7 @@ export default function ResultsPage() {
               companyName={fd.companyName}
               assessmentDate={formatDate()}
               results={results}
+              scoreDelta={scoreDelta}
             />
 
             {/* Summary */}
@@ -219,6 +228,13 @@ export default function ResultsPage() {
             <Card title="Industry Benchmark">
               <BenchmarkPanel benchmark={results.benchmark} industry={fd.industry} />
             </Card>
+
+            {/* Assessment history */}
+            {!isDemo && submission.id !== "shared" && (
+              <Card title="Previous Assessments">
+                <AssessmentHistory history={history} currentId={submission.id} />
+              </Card>
+            )}
 
             {/* Footer CTA */}
             {!isDemo && (
