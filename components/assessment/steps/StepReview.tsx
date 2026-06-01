@@ -80,12 +80,12 @@ export function StepReview({
             {preliminary.status}
           </span>
         </div>
-        <p className="text-xs text-slate-500">Full AI Governance Score calculated on submission — submit to see the complete breakdown.</p>
+        <p className="text-sm text-slate-500">Full AI Governance Score calculated on submission — submit to see the complete breakdown.</p>
         {preliminary.concerns.length > 0 && (
           <div className="mt-4 space-y-1.5">
             <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Concerns flagged so far</p>
             {preliminary.concerns.map((c) => (
-              <div key={c} className="flex items-start gap-2 text-xs text-slate-700">
+              <div key={c} className="flex items-start gap-2 text-sm text-slate-700">
                 <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
                 {c}
               </div>
@@ -100,7 +100,7 @@ export function StepReview({
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">{section.title}</p>
           <div className="divide-y divide-slate-100">
             {section.rows.map(({ label, value }) => (
-              <div key={label} className="flex justify-between py-2 text-sm">
+              <div key={label} className="flex justify-between py-2 text-base">
                 <span className="text-slate-500 shrink-0 mr-4">{label}</span>
                 <span className="font-medium text-slate-900 text-right capitalize">{value}</span>
               </div>
@@ -109,7 +109,7 @@ export function StepReview({
         </div>
       ))}
 
-      <p className="text-xs text-slate-400 text-center">Go back to any step to edit before submitting.</p>
+      <p className="text-sm text-slate-400 text-center">Go back to any step to edit before submitting.</p>
     </div>
   );
 }

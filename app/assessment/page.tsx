@@ -152,7 +152,7 @@ export default function AssessmentPage() {
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-sm text-slate-500">
               Step {step + 1} of {steps.length} — {steps[step].title}
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function AssessmentPage() {
 
           {/* Save failure banner */}
           {saveFailed && (
-            <div className="mb-4 flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            <div className="mb-4 flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-base text-amber-800">
               <span className="shrink-0 font-semibold">⚠</span>
               <span>
                 Draft could not be saved — your browser storage may be full. Your progress is not persisted.{" "}
