@@ -1,8 +1,8 @@
-# RiskPilot AI
+# Verdictal
 
 ## Overview
 
-RiskPilot AI is a structured AI governance and risk assessment platform designed to help UK SMEs evaluate the regulatory, operational, and ethical risk exposure of their AI systems.
+Verdictal is a structured AI governance and risk assessment platform designed to help UK SMEs evaluate the regulatory, operational, and ethical risk exposure of their AI systems.
 
 The platform provides explainable risk scoring and governance recommendations aligned with ISO/IEC 42001 principles and emerging AI regulatory frameworks.
 
@@ -26,7 +26,7 @@ Most SMEs lack internal AI governance expertise or structured assessment tools.
 
 ## The Solution
 
-RiskPilot AI provides:
+Verdictal provides:
 
 - Structured AI use-case intake and classification  
 - Multi-dimensional risk scoring engine  

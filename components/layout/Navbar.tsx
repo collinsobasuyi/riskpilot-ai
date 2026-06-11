@@ -75,7 +75,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 shrink-0">
               <Shield className="h-5 w-5 text-blue-700" />
-              <span className="font-bold text-slate-900 tracking-tight">RiskPilot AI</span>
+              <span className="font-bold text-slate-900 tracking-tight">Verdictal</span>
               <span className="hidden sm:inline-block text-sm text-slate-400 font-normal border-l border-slate-200 pl-2.5 ml-0.5">
                 AI Governance
               </span>

@@ -35,7 +35,7 @@ export function ReportHeader({
         <div className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-blue-400" />
           <span className="text-sm font-semibold text-white">
-            RiskPilot AI Governance Report
+            Verdictal AI Governance Report
           </span>
         </div>
         <span className="text-xs text-slate-400">{assessmentDate}</span>

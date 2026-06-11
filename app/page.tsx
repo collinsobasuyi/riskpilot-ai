@@ -39,7 +39,7 @@ export default function Home() {
 
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
               Regulated firms are adopting AI faster than they can evidence control, oversight, and
-              accountability. RiskPilot gives you a structured governance assessment and the evidence
+              accountability. Verdictal gives you a structured governance assessment and the evidence
               pack your compliance team, board, and insurers need.
             </p>
 
@@ -327,7 +327,7 @@ export default function Home() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Shield className="h-4 w-4 text-blue-400" />
-                    <span className="text-sm font-semibold text-white">RiskPilot AI Governance Report</span>
+                    <span className="text-sm font-semibold text-white">Verdictal AI Governance Report</span>
                   </div>
                   <span className="rounded-sm bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-300">
                     Example
@@ -482,7 +482,7 @@ export default function Home() {
             <div className="grid gap-8 sm:grid-cols-3 text-center sm:text-left">
               <div className="sm:col-span-1">
                 <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
-                  Why RiskPilot
+                  Why Verdictal
                 </p>
                 <p className="text-base text-slate-500 leading-relaxed">
                   Built by someone with direct experience in regulated financial environments
@@ -513,7 +513,7 @@ export default function Home() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-3">
                 <Shield className="h-5 w-5 text-blue-400" />
-                <span className="font-bold text-white">RiskPilot AI</span>
+                <span className="font-bold text-white">Verdictal</span>
               </div>
               <p className="text-sm text-slate-400 max-w-xs leading-relaxed">
                 AI governance readiness assessments and evidence for FCA and PRA regulated firms.
@@ -525,7 +525,7 @@ export default function Home() {
               <ul className="space-y-2.5 text-sm">
                 {[
                   { href: "/assessment", label: "Free Governance Assessment" },
-                  { href: "/about", label: "About RiskPilot" },
+                  { href: "/about", label: "About Verdictal" },
                   { href: "/#how-it-works", label: "How It Works" },
                 ].map((l) => (
                   <li key={l.href}>
@@ -541,8 +541,8 @@ export default function Home() {
               <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Contact</p>
               <ul className="space-y-2.5 text-sm">
                 <li>
-                  <a href="mailto:hello@riskpilot.ai" className="text-slate-400 hover:text-white transition-colors">
-                    hello@riskpilot.ai
+                  <a href="mailto:hello@verdictal.ai" className="text-slate-400 hover:text-white transition-colors">
+                    hello@verdictal.ai
                   </a>
                 </li>
                 <li className="text-slate-500">London, United Kingdom</li>
@@ -552,7 +552,7 @@ export default function Home() {
           </div>
 
           <div className="mt-10 border-t border-slate-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
-            <p>&copy; {new Date().getFullYear()} RiskPilot AI. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Verdictal. All rights reserved.</p>
             <p>Not legal advice. For regulated firms seeking AI governance guidance.</p>
           </div>
         </Container>

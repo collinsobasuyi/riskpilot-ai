@@ -21,9 +21,9 @@ import {
 import Container from "../../components/layout/Container";
 
 export const metadata: Metadata = {
-  title: "About RiskPilot AI — The Case for AI Governance Readiness",
+  title: "About Verdictal — The Case for AI Governance Readiness",
   description:
-    "The problem statement, solution, target market, and hypothesis behind RiskPilot AI — an AI governance readiness and evidence platform for regulated firms.",
+    "The problem statement, solution, target market, and hypothesis behind Verdictal — an AI governance readiness and evidence platform for regulated firms.",
 };
 
 // ─── Failure case data ────────────────────────────────────────────────────────
@@ -143,14 +143,14 @@ export default function AboutPage() {
           <div className="mx-auto max-w-3xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium tracking-widest text-slate-300 uppercase">
               <FileText className="h-3.5 w-3.5 text-blue-400" />
-              About RiskPilot
+              About Verdictal
             </div>
             <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
               The case for AI governance readiness.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-slate-400 max-w-2xl">
               Regulated firms are adopting AI faster than they can evidence control, oversight, and
-              accountability. RiskPilot exists to close that gap — starting with the firms where
+              accountability. Verdictal exists to close that gap — starting with the firms where
               the consequences are most concrete.
             </p>
           </div>
@@ -347,7 +347,7 @@ export default function AboutPage() {
                 <p className="text-base text-blue-900">
                   <span className="font-semibold">Common thread across every case:</span> the AI
                   system made or influenced consequential decisions without adequate documentation,
-                  monitoring, or oversight. RiskPilot is designed to surface and score exactly
+                  monitoring, or oversight. Verdictal is designed to surface and score exactly
                   these gaps — before they become a fine, a claim, or a headline.
                 </p>
               </div>
@@ -368,7 +368,7 @@ export default function AboutPage() {
             </h2>
             <p className="mt-4 text-base text-slate-500 max-w-2xl">
               Multiple regulatory and commercial drivers are converging simultaneously. Each one
-              creates demand for exactly what RiskPilot produces — a structured assessment and
+              creates demand for exactly what Verdictal produces — a structured assessment and
               defensible evidence pack.
             </p>
 
@@ -400,10 +400,10 @@ export default function AboutPage() {
               The Solution
             </p>
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              What RiskPilot does.
+              What Verdictal does.
             </h2>
             <p className="mt-5 text-base text-slate-600 leading-relaxed">
-              RiskPilot is a structured AI governance readiness assessment and evidence platform
+              Verdictal is a structured AI governance readiness assessment and evidence platform
               for regulated firms. You answer a structured set of questions about your AI system —
               decision authority, data handling, oversight controls, bias testing, incident history,
               and governance maturity. We produce a scored output and evidence pack.
@@ -582,7 +582,7 @@ export default function AboutPage() {
               <div className="rounded-sm border border-slate-200 p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">What we are not claiming</p>
                 <p className="text-base text-slate-600 leading-relaxed">
-                  RiskPilot is not a legal opinion, a regulatory audit, or a guarantee of
+                  Verdictal is not a legal opinion, a regulatory audit, or a guarantee of
                   coverage. It is a structured evidence tool. The same way a fire risk assessment
                   does not make your building fireproof — it makes it insurable, defensible, and
                   auditable. That is what regulated firms need right now.
@@ -676,7 +676,7 @@ export default function AboutPage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <a
-                href="mailto:hello@riskpilot.ai"
+                href="mailto:hello@verdictal.ai"
                 className="inline-flex items-center gap-2 rounded-sm border border-slate-600 px-6 py-3 text-sm font-semibold text-slate-300 hover:border-slate-400 hover:text-white transition-colors"
               >
                 Get in touch
