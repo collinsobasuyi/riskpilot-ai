@@ -1,19 +1,30 @@
 import React from "react";
 import { Shield } from "lucide-react";
 import { ComputedResults } from "../../lib/risk/scoring";
+import { ReadinessStatus } from "../../lib/risk/insurance";
+
+const READINESS_BADGE: Record<"green" | "amber" | "red", string> = {
+  green: "bg-green-500/20 text-green-300",
+  amber: "bg-amber-500/20 text-amber-300",
+  red: "bg-red-500/20 text-red-300",
+};
 
 export function ReportHeader({
   systemName,
   companyName,
+  industry,
   assessmentDate,
   results,
   scoreDelta,
+  readiness,
 }: {
   systemName: string;
   companyName: string;
+  industry?: string;
   assessmentDate: string;
   results: ComputedResults;
   scoreDelta?: number;
+  readiness?: { status: ReadinessStatus; statusColor: "green" | "amber" | "red" };
 }) {
   const scoreColor =
     results.riskScore >= 70
@@ -43,20 +54,36 @@ export function ReportHeader({
       <div className="mt-3">
         <p className="text-xs text-slate-400">{companyName}</p>
         <p className="text-sm font-semibold text-white">{systemName}</p>
+        {industry && (
+          <p className="mt-0.5 text-xs text-slate-400">
+            {industry} · Insurance Readiness Review
+          </p>
+        )}
       </div>
       <div className="mt-4 flex items-end gap-3 flex-wrap">
-        <span className={`text-5xl font-bold ${scoreColor}`}>{results.riskScore}</span>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            AI Risk Score
+          </p>
+          <span className={`text-5xl font-bold ${scoreColor}`}>{results.riskScore}</span>
+        </div>
         <div className="mb-1 flex items-center gap-2 flex-wrap">
           <span className="text-slate-400 text-sm">/100</span>
           <div className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-semibold ${tierColor}`}>
             {results.riskLevel} Risk
           </div>
+          {readiness && (
+            <div className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-semibold ${READINESS_BADGE[readiness.statusColor]}`}>
+              {readiness.status}
+            </div>
+          )}
+          {/* Risk score: higher is worse, so an increase is red and a drop is green */}
           {scoreDelta !== undefined && (
             <span className={`inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-bold ${
               scoreDelta > 0
-                ? "bg-green-500/20 text-green-300"
-                : scoreDelta < 0
                 ? "bg-red-500/20 text-red-300"
+                : scoreDelta < 0
+                ? "bg-green-500/20 text-green-300"
                 : "bg-slate-500/20 text-slate-400"
             }`}>
               {scoreDelta > 0 ? `↑ +${scoreDelta}` : scoreDelta < 0 ? `↓ ${scoreDelta}` : "= no change"} since last

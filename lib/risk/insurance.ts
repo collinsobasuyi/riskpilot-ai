@@ -15,6 +15,12 @@ export interface InsuranceBrief {
     headline: string;
     blockers: string[];
   };
+  verdict: {
+    underwritingTier: string;
+    likelyOutcome: string;
+    reason: string;
+    recommendedAction: string;
+  };
   brokerSummary: string[];
   underwriterNotes: {
     riskProfile: string[];
@@ -79,6 +85,11 @@ const OVERSIGHT_LABELS: Record<string, string> = {
   none: "No formal human oversight of AI outputs",
 };
 
+export function industryDisplayLabel(industry: string): string {
+  const label = INDUSTRY_LABELS[industry] ?? industry;
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
 function industryLabel(data: AssessmentFormData): string {
   return INDUSTRY_LABELS[data.industry] ?? data.industry;
 }
@@ -110,6 +121,27 @@ export function buildInsuranceBrief(
     status = "Review-ready";
     statusColor = "green";
   }
+
+  const likelyOutcome =
+    status === "Review-ready"
+      ? "Standard terms achievable, subject to underwriting review"
+      : status === "Conditionally ready"
+        ? "Conditional cover or exclusions likely until critical items are resolved"
+        : "Cover likely to be declined or heavily excluded in current state";
+
+  const reason =
+    status === "Review-ready"
+      ? "No critical governance gaps were identified in this assessment."
+      : coverageGap
+        ? "A confirmed AI coverage gap and unresolved governance items remain."
+        : criticals.length > 0
+          ? "Critical governance gaps remain unresolved."
+          : "Overall risk score or coverage eligibility falls outside standard terms.";
+
+  const recommendedAction =
+    status === "Review-ready"
+      ? "Proceed to broker or underwriting review with the evidence pack in this report."
+      : "Address the critical governance and evidence gaps in this report before formal underwriting review.";
 
   const headline =
     status === "Review-ready"
@@ -170,6 +202,12 @@ export function buildInsuranceBrief(
 
   return {
     readiness: { status, statusColor, headline, blockers: criticals },
+    verdict: {
+      underwritingTier: results.coverageTier,
+      likelyOutcome,
+      reason,
+      recommendedAction,
+    },
     brokerSummary,
     underwriterNotes: { riskProfile, controlsInPlace, outstandingConcerns },
   };

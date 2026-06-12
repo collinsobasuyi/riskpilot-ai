@@ -25,6 +25,8 @@ export interface ComplianceGap {
   standard: string;
   status: "ok" | "partial" | "gap";
   missing: string[];
+  impact: string;
+  suggestedOwner: string;
 }
 
 export interface ComputedResults {
@@ -411,21 +413,29 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
       standard: "FCA Consumer Duty",
       status: consumerDutyMissing.length === 0 ? "ok" : consumerDutyMissing.length <= 1 ? "partial" : "gap",
       missing: consumerDutyMissing,
+      impact: "May affect approval of customer-facing AI and attract FCA scrutiny at renewal",
+      suggestedOwner: "Compliance lead / SMF holder",
     },
     {
       standard: "PRA Model Risk (SS1/23)",
       status: praMissing.length === 0 ? "ok" : praMissing.length <= 1 ? "partial" : "gap",
       missing: praMissing,
+      impact: "High underwriting concern — model risk framework expected for regulated firms",
+      suggestedOwner: "Chief Risk Officer / model risk function",
     },
     {
       standard: "ISO 42001",
       status: isoMissing.length === 0 ? "ok" : isoMissing.length <= 1 ? "partial" : "gap",
       missing: isoMissing,
+      impact: "Weakens the governance evidence relied on by auditors and underwriters",
+      suggestedOwner: "Head of AI governance / CTO",
     },
     {
       standard: "GDPR / UK GDPR",
       status: gdprMissing.length === 0 ? "ok" : gdprMissing.length <= 1 ? "partial" : "gap",
       missing: gdprMissing,
+      impact: "Regulatory exposure including ICO enforcement; affects insurability of data-related claims",
+      suggestedOwner: "Data Protection Officer",
     },
   ];
 

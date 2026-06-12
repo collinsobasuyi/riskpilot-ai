@@ -32,29 +32,62 @@ function NotesList({ heading, items }: { heading: string; items: string[] }) {
   );
 }
 
+const STATUS_PANEL: Record<InsuranceBrief["readiness"]["statusColor"], string> = {
+  green: "border-green-200 bg-green-50/60",
+  amber: "border-amber-300 bg-amber-50/60",
+  red: "border-red-200 bg-red-50/60",
+};
+
 export function InsuranceBriefPanel({ brief }: { brief: InsuranceBrief }) {
-  const { readiness, brokerSummary, underwriterNotes } = brief;
+  const { readiness, verdict, brokerSummary, underwriterNotes } = brief;
 
   return (
     <div className="space-y-5">
-      {/* Readiness status */}
-      <div>
+      {/* Readiness verdict */}
+      <div className={`rounded-sm border p-4 sm:p-5 ${STATUS_PANEL[readiness.statusColor]}`}>
         <span
           className={`inline-flex items-center gap-1.5 rounded-sm border px-2.5 py-1 text-sm font-semibold ${STATUS_BADGE[readiness.statusColor]}`}
         >
           {STATUS_ICON[readiness.statusColor]}
           {readiness.status}
         </span>
-        <p className="mt-3 text-base text-slate-700 leading-relaxed">{readiness.headline}</p>
+        <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+          <div>
+            <dt className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+              Underwriting tier
+            </dt>
+            <dd className="mt-0.5 text-base font-semibold text-slate-900">
+              {verdict.underwritingTier}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+              Likely outcome
+            </dt>
+            <dd className="mt-0.5 text-base text-slate-800">{verdict.likelyOutcome}</dd>
+          </div>
+          <div className="sm:col-span-2">
+            <dt className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+              Reason
+            </dt>
+            <dd className="mt-0.5 text-base text-slate-800">{verdict.reason}</dd>
+          </div>
+        </dl>
+        <p className="mt-4 text-base text-slate-700 leading-relaxed">{readiness.headline}</p>
         {readiness.blockers.length > 0 && (
-          <ul className="mt-3 space-y-1.5">
-            {readiness.blockers.map((blocker) => (
-              <li key={blocker} className="flex items-start gap-2 text-sm text-slate-700">
-                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
-                {blocker}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
+              What blocks readiness
+            </p>
+            <ul className="space-y-1.5">
+              {readiness.blockers.map((blocker) => (
+                <li key={blocker} className="flex items-start gap-2 text-sm text-slate-700">
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
+                  {blocker}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
 

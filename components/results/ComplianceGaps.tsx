@@ -27,6 +27,20 @@ export function ComplianceGaps({ gaps }: { gaps: ComplianceGap[] }) {
                 <li key={m} className="text-sm text-slate-600 leading-relaxed">· {m}</li>
               ))}
             </ul>
+            <div className="mt-3 grid grid-cols-1 gap-x-8 gap-y-2 border-t border-slate-100 pt-3 sm:grid-cols-2">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                  Impact
+                </p>
+                <p className="mt-0.5 text-sm text-slate-600 leading-relaxed">{gap.impact}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                  Suggested owner
+                </p>
+                <p className="mt-0.5 text-sm text-slate-600 leading-relaxed">{gap.suggestedOwner}</p>
+              </div>
+            </div>
           </div>
         );
       })}

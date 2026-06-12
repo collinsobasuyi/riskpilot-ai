@@ -7,7 +7,6 @@ import Container from "../../components/layout/Container";
 import Card from "../../components/ui/Card";
 import ButtonLink from "../../components/ui/ButtonLink";
 import {
-  AssessmentFormData,
   StoredSubmission,
   SUBMISSION_KEY,
   getHistory,
@@ -21,13 +20,15 @@ import { RiskDriversList } from "../../components/results/RiskDriversList";
 import { RecommendationsPanel } from "../../components/results/RecommendationsPanel";
 import { ComplianceGaps } from "../../components/results/ComplianceGaps";
 import { BenchmarkPanel } from "../../components/results/BenchmarkPanel";
-import { CoveragePanel } from "../../components/results/CoveragePanel";
 import { DEMO_SUBMISSION } from "../../lib/risk/demo-data";
 import { encodeShareData, decodeShareData } from "../../lib/risk/share";
 import { ActionPlanPanel } from "../../components/results/ActionPlanPanel";
 import { AssessmentHistory } from "../../components/results/AssessmentHistory";
-import { buildInsuranceBrief } from "../../lib/risk/insurance";
+import { buildInsuranceBrief, industryDisplayLabel } from "../../lib/risk/insurance";
 import { InsuranceBriefPanel } from "../../components/results/InsuranceBriefPanel";
+import { buildEvidenceChecklist } from "../../lib/risk/evidence";
+import { EvidenceChecklist } from "../../components/results/EvidenceChecklist";
+import { VerdictPanel } from "../../components/results/VerdictPanel";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -92,6 +93,11 @@ export default function ResultsPage() {
     return buildInsuranceBrief(submission.data, results);
   }, [submission, results]);
 
+  const evidenceChecklist = useMemo(
+    () => (submission ? buildEvidenceChecklist(submission.data) : []),
+    [submission]
+  );
+
   const scoreDelta = useMemo(() => {
     if (!submission || !results || isDemo || submission.id === "shared") return undefined;
     const prev = history.find(
@@ -142,7 +148,7 @@ export default function ResultsPage() {
 
       <section className="py-10 bg-slate-50 print:bg-white" ref={printRef}>
         <Container>
-          <div className="mx-auto max-w-3xl space-y-6">
+          <div className="mx-auto max-w-5xl space-y-6">
 
             {/* Top nav */}
             <div className="flex items-center justify-between print:hidden">
@@ -186,9 +192,11 @@ export default function ResultsPage() {
             <ReportHeader
               systemName={fd.systemName}
               companyName={fd.companyName}
+              industry={industryDisplayLabel(fd.industry)}
               assessmentDate={formatDate()}
               results={results}
               scoreDelta={scoreDelta}
+              readiness={insuranceBrief?.readiness}
             />
 
             {/* Summary */}
@@ -198,17 +206,8 @@ export default function ResultsPage() {
             </Card>
 
             {/* Score breakdown */}
-            <Card title="Score Breakdown">
+            <Card title="AI Risk Score Breakdown">
               <CategoryScores scores={results.categoryScores} />
-            </Card>
-
-            {/* Coverage */}
-            <Card title="Coverage Implications">
-              <CoveragePanel
-                eligibility={results.coverageEligibility}
-                tier={results.coverageTier}
-                exclusions={results.exclusions}
-              />
             </Card>
 
             {/* Insurance readiness brief */}
@@ -223,6 +222,16 @@ export default function ResultsPage() {
               <RiskDriversList drivers={results.riskDrivers} />
             </Card>
 
+            {/* Compliance gaps */}
+            <Card title="Compliance Gaps">
+              <ComplianceGaps gaps={results.complianceGaps} />
+            </Card>
+
+            {/* Evidence checklist */}
+            <Card title="Evidence Checklist">
+              <EvidenceChecklist items={evidenceChecklist} />
+            </Card>
+
             {/* Recommendations */}
             <Card title="Recommendations">
               <RecommendationsPanel recommendations={results.recommendations} />
@@ -231,11 +240,6 @@ export default function ResultsPage() {
             {/* 90-day action plan */}
             <Card title="Your 90-Day Action Plan">
               <ActionPlanPanel recommendations={results.recommendations} />
-            </Card>
-
-            {/* Compliance gaps */}
-            <Card title="Compliance Gaps">
-              <ComplianceGaps gaps={results.complianceGaps} />
             </Card>
 
             {/* Benchmark */}
@@ -249,6 +253,9 @@ export default function ResultsPage() {
                 <AssessmentHistory history={history} currentId={submission.id} />
               </Card>
             )}
+
+            {/* Closing verdict */}
+            {insuranceBrief && <VerdictPanel results={results} brief={insuranceBrief} />}
 
             {/* Footer CTA */}
             {!isDemo && (

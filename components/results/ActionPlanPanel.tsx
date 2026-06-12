@@ -42,20 +42,23 @@ export function ActionPlanPanel({ recommendations }: { recommendations: Recs }) 
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
       {columns.map((col) => (
         <div key={col.label} className={`border-l-4 ${col.borderColor} pl-4`}>
-          <p className={`mb-3 text-xs font-bold uppercase tracking-widest ${col.labelColor}`}>
-            {col.days} · {col.label}
+          <p className={`text-sm font-bold uppercase tracking-widest ${col.labelColor}`}>
+            {col.days}
+          </p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-500">
+            {col.label} priority
           </p>
           {col.items.length === 0 ? (
             <p className="text-sm text-slate-400 italic">No actions required</p>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {col.items.map((item) => (
                 <div
                   key={item}
-                  className={`rounded-sm px-3 py-2 text-sm text-slate-700 leading-relaxed ${col.bgColor}`}
+                  className={`rounded-sm px-3.5 py-2.5 text-sm text-slate-700 leading-relaxed ${col.bgColor}`}
                 >
                   {item}
                 </div>
