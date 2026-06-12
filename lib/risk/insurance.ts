@@ -20,8 +20,9 @@ export interface InsuranceBrief {
     likelyOutcome: string;
     reason: string;
     recommendedAction: string;
+    nextStep: string;
   };
-  brokerSummary: string[];
+  brokerSummary: { heading: string; text: string }[];
   underwriterNotes: {
     riskProfile: string[];
     controlsInPlace: string[];
@@ -141,7 +142,12 @@ export function buildInsuranceBrief(
   const recommendedAction =
     status === "Review-ready"
       ? "Proceed to broker or underwriting review with the evidence pack in this report."
-      : "Address the critical governance and evidence gaps in this report before formal underwriting review.";
+      : "Address the critical governance and evidence gaps identified in this report before formal underwriting, audit, or enterprise review.";
+
+  const nextStep =
+    status === "Review-ready"
+      ? "Share this report with your broker and schedule the underwriting or audit review."
+      : "Complete the 30-day critical actions and rerun the assessment before submitting to brokers, underwriters, auditors, or enterprise clients.";
 
   const headline =
     status === "Review-ready"
@@ -152,13 +158,23 @@ export function buildInsuranceBrief(
 
   // Broker summary — plain English a broker can lift into a submission email
   const brokerSummary = [
-    `${data.companyName} is a ${industryLabel(data)} firm (${SIZE_LABELS[data.companySize] ?? data.companySize})${
-      data.regulatedEntity ? ", operating as a regulated entity" : ""
-    }. The assessed system, ${data.systemName}, is used for: ${data.aiUseCase.trim()}`,
-    `The firm scores ${results.riskScore}/100 on the Verdictal AI risk assessment (${results.riskLevel.toLowerCase()} risk), placing it in the ${results.coverageTier} underwriting tier with ${results.coverageEligibility.toLowerCase()} eligibility. ${AUTHORITY_LABELS[data.decisionAuthority]}, and ${SENSITIVITY_LABELS[data.dataSensitivity]}.`,
-    criticals.length > 0
-      ? `Before submission, ${criticals.length} critical item${criticals.length !== 1 ? "s" : ""} should be addressed — these are the gaps most likely to affect terms, premium, or exclusions.`
-      : `No critical gaps were identified. The full report below documents the firm's controls, residual risk drivers, and recommended improvements.`,
+    {
+      heading: "Business context",
+      text: `${data.companyName} is a ${industryLabel(data)} firm (${SIZE_LABELS[data.companySize] ?? data.companySize})${
+        data.regulatedEntity ? ", operating as a regulated entity" : ""
+      }. The assessed system, ${data.systemName}, is used for: ${data.aiUseCase.trim()}`,
+    },
+    {
+      heading: "Assessment outcome",
+      text: `The firm has an AI Risk Score of ${results.riskScore}/100 (${results.riskLevel.toLowerCase()} risk), placing it in the ${results.coverageTier} underwriting tier with ${results.coverageEligibility.toLowerCase()} eligibility. ${AUTHORITY_LABELS[data.decisionAuthority]}, and ${SENSITIVITY_LABELS[data.dataSensitivity]}.`,
+    },
+    {
+      heading: "Broker note",
+      text:
+        criticals.length > 0
+          ? `Before submission, ${criticals.length} critical item${criticals.length !== 1 ? "s" : ""} should be addressed — these are the gaps most likely to affect cover terms, exclusions, premium loading, or underwriting questions.`
+          : `No critical gaps were identified. The full report below documents the firm's controls, residual risk drivers, and recommended improvements.`,
+    },
   ];
 
   // Underwriter notes — structured factual view
@@ -207,6 +223,7 @@ export function buildInsuranceBrief(
       likelyOutcome,
       reason,
       recommendedAction,
+      nextStep,
     },
     brokerSummary,
     underwriterNotes: { riskProfile, controlsInPlace, outstandingConcerns },

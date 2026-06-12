@@ -13,17 +13,17 @@ describe("computeResults", () => {
 
   it("full decision authority produces 'Fully automated' risk driver", () => {
     const result = computeResults({ ...base, decisionAuthority: "full" });
-    expect(result.riskDrivers.some((d) => d.includes("Fully automated"))).toBe(true);
+    expect(result.riskDrivers.some((d) => d.driver.includes("Fully automated"))).toBe(true);
   });
 
   it("sensitive data produces relevant risk driver", () => {
     const result = computeResults({ ...base, dataSensitivity: "sensitive" });
-    expect(result.riskDrivers.some((d) => d.includes("Sensitive data"))).toBe(true);
+    expect(result.riskDrivers.some((d) => d.driver.includes("Sensitive data"))).toBe(true);
   });
 
   it("no documented process produces governance risk driver", () => {
     const result = computeResults({ ...base, documentedProcess: false });
-    expect(result.riskDrivers.some((d) => d.includes("governance"))).toBe(true);
+    expect(result.riskDrivers.some((d) => d.driver.includes("governance"))).toBe(true);
   });
 
   it("riskLevel is High when riskScore >= 70", () => {
@@ -54,7 +54,7 @@ describe("computeResults", () => {
     expect(result.riskLevel).toBe("High");
   });
 
-  it("riskDrivers has at most 10 entries", () => {
+  it("riskDrivers has at most 12 entries", () => {
     const result = computeResults({
       ...base,
       decisionAuthority: "full",
@@ -68,7 +68,7 @@ describe("computeResults", () => {
       monitoring: ["None"],
       modelDocs: ["None"],
     });
-    expect(result.riskDrivers.length).toBeLessThanOrEqual(10);
+    expect(result.riskDrivers.length).toBeLessThanOrEqual(12);
   });
 
   it("riskLevel is Low when all signals are favourable", () => {

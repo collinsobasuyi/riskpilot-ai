@@ -25,7 +25,10 @@ import { encodeShareData, decodeShareData } from "../../lib/risk/share";
 import { ActionPlanPanel } from "../../components/results/ActionPlanPanel";
 import { AssessmentHistory } from "../../components/results/AssessmentHistory";
 import { buildInsuranceBrief, industryDisplayLabel } from "../../lib/risk/insurance";
-import { InsuranceBriefPanel } from "../../components/results/InsuranceBriefPanel";
+import {
+  ReadinessVerdictPanel,
+  BrokerSummaryPanel,
+} from "../../components/results/InsuranceBriefPanel";
 import { buildEvidenceChecklist } from "../../lib/risk/evidence";
 import { EvidenceChecklist } from "../../components/results/EvidenceChecklist";
 import { VerdictPanel } from "../../components/results/VerdictPanel";
@@ -148,7 +151,7 @@ export default function ResultsPage() {
 
       <section className="py-10 bg-slate-50 print:bg-white" ref={printRef}>
         <Container>
-          <div className="mx-auto max-w-5xl space-y-6">
+          <div className="mx-auto max-w-[1120px] space-y-6">
 
             {/* Top nav */}
             <div className="flex items-center justify-between print:hidden">
@@ -210,19 +213,40 @@ export default function ResultsPage() {
 
             {/* Summary */}
             <Card title="Executive Summary">
-              <p className="text-base text-slate-700 leading-relaxed">{results.summary}</p>
-              <p className="mt-2 text-xs text-slate-400">Assessed {assessmentAge}</p>
+              <div className="space-y-3 text-base text-slate-700 leading-relaxed">
+                <p>
+                  <span className="font-semibold">{fd.companyName}</span>&apos;s{" "}
+                  <span className="font-semibold">{fd.systemName}</span> has been assessed as{" "}
+                  <span className="font-semibold">{results.riskLevel} Risk</span> with an AI Risk
+                  Score of <span className="font-semibold">{results.riskScore}/100</span>.
+                </p>
+                {insuranceBrief && <p>{insuranceBrief.readiness.headline}</p>}
+                <p>{results.summary}</p>
+              </div>
+              <p className="mt-3 text-xs text-slate-400">Assessed {assessmentAge}</p>
             </Card>
+
+            {/* Insurance readiness verdict */}
+            {insuranceBrief && (
+              <Card title="Insurance Readiness Verdict">
+                <ReadinessVerdictPanel
+                  brief={insuranceBrief}
+                  missingEvidenceCount={
+                    evidenceChecklist.filter((i) => i.status === "missing").length
+                  }
+                />
+              </Card>
+            )}
 
             {/* Score breakdown */}
             <Card title="AI Risk Score Breakdown">
               <CategoryScores scores={results.categoryScores} />
             </Card>
 
-            {/* Insurance readiness brief */}
+            {/* Broker summary */}
             {insuranceBrief && (
-              <Card title="Insurance Readiness">
-                <InsuranceBriefPanel brief={insuranceBrief} />
+              <Card title="Broker Summary">
+                <BrokerSummaryPanel brief={insuranceBrief} />
               </Card>
             )}
 
@@ -247,13 +271,17 @@ export default function ResultsPage() {
             </Card>
 
             {/* 90-day action plan */}
-            <Card title="Your 90-Day Action Plan">
+            <Card title="30 / 60 / 90 Day Action Plan">
               <ActionPlanPanel recommendations={results.recommendations} />
             </Card>
 
             {/* Benchmark */}
             <Card title="Industry Benchmark">
-              <BenchmarkPanel benchmark={results.benchmark} industry={fd.industry} />
+              <BenchmarkPanel
+                benchmark={results.benchmark}
+                industry={fd.industry}
+                riskScore={results.riskScore}
+              />
             </Card>
 
             {/* Assessment history */}
@@ -267,13 +295,29 @@ export default function ResultsPage() {
             {insuranceBrief && <VerdictPanel results={results} brief={insuranceBrief} />}
 
             {/* Broker feedback prompt */}
-            <div className="rounded-sm border border-dashed border-blue-300 bg-blue-50/50 px-4 py-3 text-sm text-slate-700 leading-relaxed">
+            <div className="rounded-sm border border-dashed border-blue-300 bg-blue-50/50 px-5 py-4 text-sm text-slate-700 leading-relaxed">
               <p className="font-semibold text-slate-900">Broker feedback requested</p>
-              <p className="mt-1">
-                Would this report help prepare a client for cyber, PI, or Tech E&amp;O insurance
-                review? What evidence would an underwriter need before trusting it?
+              <p className="mt-1.5">
+                This is a prototype report created for validation. We are seeking feedback from
+                brokers, underwriters, compliance professionals, and risk consultants.
               </p>
+              <ul className="mt-2.5 space-y-1 text-slate-600">
+                <li>
+                  · Would this report help prepare a client before cyber, Professional Indemnity,
+                  or Technology E&amp;O review?
+                </li>
+                <li>· What evidence would an underwriter need before trusting this report?</li>
+                <li>· Which sections are useful, and which would you ignore?</li>
+                <li>· What is missing?</li>
+                <li>· Who would usually own this problem inside a client organisation?</li>
+              </ul>
             </div>
+
+            {/* Report footer */}
+            <p className="text-center text-xs text-slate-400">
+              Generated by Verdictal · Prototype Report · For validation only · Report ID:{" "}
+              VER-{new Date().getFullYear()}-{submission.id.slice(0, 6).toUpperCase()}
+            </p>
 
             {/* Footer CTA */}
             {!isDemo && (

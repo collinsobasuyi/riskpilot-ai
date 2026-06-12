@@ -1,59 +1,61 @@
 import React from "react";
-import { AlertCircle, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 type Recs = { critical: string[]; high: string[]; medium: string[] };
 
-function RecItem({ text, level }: { text: string; level: "critical" | "high" | "medium" }) {
-  const icon =
-    level === "critical" ? (
-      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
-    ) : level === "high" ? (
-      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-    ) : (
-      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-    );
-  return (
-    <li className="flex items-start gap-2 text-base text-slate-700 leading-relaxed">
-      {icon}
-      {text}
-    </li>
-  );
-}
+const LEVELS = [
+  {
+    key: "critical" as const,
+    label: "Critical",
+    timeline: "30 days",
+    badge: "bg-red-50 text-red-700 border-red-200",
+  },
+  {
+    key: "high" as const,
+    label: "High",
+    timeline: "60 days",
+    badge: "bg-amber-50 text-amber-700 border-amber-200",
+  },
+  {
+    key: "medium" as const,
+    label: "Medium",
+    timeline: "90 days",
+    badge: "bg-blue-50 text-blue-700 border-blue-200",
+  },
+];
 
 export function RecommendationsPanel({ recommendations }: { recommendations: Recs }) {
-  const { critical, high, medium } = recommendations;
+  const rows = LEVELS.flatMap((level) =>
+    recommendations[level.key].map((text) => ({ ...level, text }))
+  );
+  if (rows.length === 0) {
+    return <p className="text-base text-slate-500">No recommendations at this time.</p>;
+  }
   return (
-    <div className="space-y-5">
-      {critical.length > 0 && (
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-red-600">
-            Critical ({critical.length})
-          </p>
-          <ul className="space-y-2">
-            {critical.map((r) => <RecItem key={r} text={r} level="critical" />)}
-          </ul>
-        </div>
-      )}
-      {high.length > 0 && (
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-amber-600">
-            High ({high.length})
-          </p>
-          <ul className="space-y-2">
-            {high.map((r) => <RecItem key={r} text={r} level="high" />)}
-          </ul>
-        </div>
-      )}
-      {medium.length > 0 && (
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-blue-600">
-            Medium ({medium.length})
-          </p>
-          <ul className="space-y-2">
-            {medium.map((r) => <RecItem key={r} text={r} level="medium" />)}
-          </ul>
-        </div>
-      )}
+    <div className="overflow-x-auto">
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-widest text-slate-500">
+            <th className="py-2 pr-4 font-semibold">Priority</th>
+            <th className="py-2 pr-4 font-semibold">Recommendation</th>
+            <th className="py-2 font-semibold whitespace-nowrap">Timeline</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.text} className="border-b border-slate-100 last:border-0 align-top">
+              <td className="py-2.5 pr-4">
+                <span
+                  className={`inline-flex rounded-sm border px-2 py-0.5 text-xs font-medium ${row.badge}`}
+                >
+                  {row.label}
+                </span>
+              </td>
+              <td className="py-2.5 pr-4 text-slate-700 leading-relaxed">{row.text}</td>
+              <td className="py-2.5 text-slate-600 whitespace-nowrap">{row.timeline}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

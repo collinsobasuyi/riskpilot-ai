@@ -47,13 +47,21 @@ export function VerdictPanel({
           </div>
         ))}
       </dl>
-      <div className="mt-5 border-t border-slate-700 pt-4">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-          Recommended action
-        </p>
-        <p className="mt-1 text-sm text-slate-200 leading-relaxed">
-          {brief.verdict.recommendedAction}
-        </p>
+      <div className="mt-5 grid grid-cols-1 gap-4 border-t border-slate-700 pt-4 sm:grid-cols-2">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            Recommended action
+          </p>
+          <p className="mt-1 text-sm text-slate-200 leading-relaxed">
+            {brief.verdict.recommendedAction}
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            Next recommended step
+          </p>
+          <p className="mt-1 text-sm text-slate-200 leading-relaxed">{brief.verdict.nextStep}</p>
+        </div>
       </div>
     </div>
   );

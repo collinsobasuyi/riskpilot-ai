@@ -26,7 +26,14 @@ export interface ComplianceGap {
   status: "ok" | "partial" | "gap";
   missing: string[];
   impact: string;
+  requiredEvidence: string[];
   suggestedOwner: string;
+}
+
+export interface RiskDriver {
+  driver: string;
+  why: string;
+  severity: "High" | "Medium" | "Low";
 }
 
 export interface ComputedResults {
@@ -37,7 +44,7 @@ export interface ComputedResults {
   exclusions: string[];
   summary: string;
   categoryScores: CategoryScore[];
-  riskDrivers: string[];
+  riskDrivers: RiskDriver[];
   validUntil: string;
   recommendations: { critical: string[]; high: string[]; medium: string[] };
   complianceGaps: ComplianceGap[];
@@ -47,7 +54,9 @@ export interface ComputedResults {
 // ── Scoring ───────────────────────────────────────────────────────────────────
 
 export function computeResults(data: AssessmentFormData): ComputedResults {
-  const drivers: string[] = [];
+  const drivers: RiskDriver[] = [];
+  const addDriver = (driver: string, why: string, severity: RiskDriver["severity"]) =>
+    drivers.push({ driver, why, severity });
 
   // Decision authority
   const decisionScore =
@@ -55,9 +64,9 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.decisionAuthority === "partial" ? 55 : 25;
 
   if (data.decisionAuthority === "full")
-    drivers.push("Fully automated decisions — insurers require human oversight for coverage");
+    addDriver("Fully automated decisions", "Insurers require human oversight for coverage", "High");
   if (data.decisionAuthority === "partial")
-    drivers.push("AI recommendations influence decisions — review controls needed");
+    addDriver("AI recommendations influence decisions", "Evidence of review controls and human oversight needed", "Medium");
 
   // Financial impact tier
   const impactScore =
@@ -67,13 +76,13 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.financialImpactTier === "100k_to_1m" ? 50 : 25;
 
   if (data.financialImpactTier === "harm")
-    drivers.push("Potential individual harm — may trigger coverage exclusions without safeguards");
+    addDriver("Potential individual harm", "May trigger coverage exclusions without safeguards", "High");
   if (data.financialImpactTier === "legal")
-    drivers.push("Regulatory exposure — FCA/PRA will scrutinise at renewal");
+    addDriver("Regulatory exposure", "FCA/PRA will scrutinise at renewal", "High");
   if (data.financialImpactTier === "over_1m")
-    drivers.push("Potential losses over £1m — insurer will require strong controls evidence");
+    addDriver("Potential losses over £1m", "Insurer will require strong controls evidence", "High");
   if (data.financialImpactTier === "100k_to_1m")
-    drivers.push("Financial impact risk — documented controls required");
+    addDriver("Financial impact risk", "Poor outcomes may affect customers financially; documented controls required", "Medium");
 
   // Data sensitivity
   const dataScore =
@@ -81,17 +90,17 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.dataSensitivity === "basic" ? 55 : 20;
 
   if (data.dataSensitivity === "sensitive")
-    drivers.push("Sensitive data processing — enhanced underwriting required");
+    addDriver("Sensitive data processing", "Increases GDPR exposure and underwriting scrutiny", "High");
   if (data.thirdPartyData)
-    drivers.push("Third-party data — insurers will request vendor risk assessments");
+    addDriver("Third-party data usage", "Insurers will request vendor risk assessments and contractual evidence", "Medium");
 
   // Data types
   const dataTypesCount = data.dataTypes?.length || 0;
   const dataTypesScore = dataTypesCount > 3 ? 15 : dataTypesCount > 1 ? 8 : 0;
   if (dataTypesCount > 3)
-    drivers.push("Multiple data types — increases underwriting complexity");
+    addDriver("Multiple data types processed", "Increases underwriting complexity", "Medium");
   if (data.dataTypes?.includes("Financial data") || data.dataTypes?.includes("Credit data"))
-    drivers.push("Financial/Credit data — FCA Consumer Duty considerations apply");
+    addDriver("Financial / credit data in use", "FCA Consumer Duty considerations apply", "Medium");
 
   // Regulations
   const hasConsumerDuty = data.regulations?.includes("FCA Consumer Duty");
@@ -100,37 +109,37 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
   const hasISO = data.regulations?.includes("ISO 42001");
 
   if (hasGDPR && data.dataSensitivity === "sensitive")
-    drivers.push("GDPR: Article 35 DPIA likely required for insurer due diligence");
+    addDriver("GDPR Article 35 DPIA likely required", "Insurers will expect DPIA evidence in due diligence", "High");
   if (hasISO && !data.documentedProcess)
-    drivers.push("ISO 42001: Evidence of governance framework needed");
+    addDriver("ISO 42001 governance evidence needed", "No documented governance framework to evidence against the standard", "Medium");
   if (hasConsumerDuty && data.deploymentType !== "internal")
-    drivers.push("FCA Consumer Duty: Transparency obligations apply to customer-facing AI");
+    addDriver("FCA Consumer Duty obligations", "Transparency obligations apply to customer-facing AI", "High");
   if (hasPRA && data.decisionAuthority === "full")
-    drivers.push("PRA SS1/23: Model risk management expectations for automated decisions");
+    addDriver("PRA SS1/23 model risk expectations", "Model risk management expectations apply to automated decisions", "High");
 
   // AI capabilities
   const caps = data.aiCapabilities || [];
   if (caps.includes("Generative / LLM"))
-    drivers.push("Generative AI in use — hallucination and output validation required");
+    addDriver("Generative AI in use", "Hallucination and output validation controls required", "Medium");
 
   // Bias testing
   const biasTesting = data.biasTesting || [];
   const noBiasTesting = biasTesting.includes("No testing conducted") || biasTesting.length === 0;
   if (noBiasTesting && data.deploymentType !== "internal")
-    drivers.push("No bias testing — potential discrimination claims may be excluded");
+    addDriver("No bias testing", "Potential discrimination claims may be excluded from cover", "High");
 
   // Model docs
   const modelDocs = data.modelDocs || [];
   const noModelDocs = modelDocs.includes("None") || modelDocs.length === 0;
   const docScore = noModelDocs ? 20 : modelDocs.length >= 3 ? 0 : 10;
   if (noModelDocs)
-    drivers.push("No model documentation — insurers cannot validate risk");
+    addDriver("No model documentation", "Insurers cannot validate model risk without documentation", "High");
 
   // Monitoring
   const monitoring = data.monitoring || [];
   const noMonitoring = monitoring.includes("None") || monitoring.length === 0;
   if (noMonitoring)
-    drivers.push("No continuous monitoring — insurers require evidence of oversight");
+    addDriver("No continuous monitoring", "Insurers require evidence of ongoing oversight", "Medium");
 
   // Training / governance maturity
   const noTraining =
@@ -138,7 +147,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.trainingFrequency === "none" ||
     data.trainingFrequency === "one-time";
   if (noTraining)
-    drivers.push("Limited AI governance training — maturity concern for underwriters");
+    addDriver("Limited AI governance training", "Governance maturity concern for underwriters", "Low");
 
   // Governance
   const oversightPenalty =
@@ -148,9 +157,9 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
   const dpoPenalty = data.hasDpo ? -5 : 0;
 
   if (!data.documentedProcess)
-    drivers.push("No documented governance — insurers will require evidence at renewal");
+    addDriver("No documented governance", "Insurers will require governance evidence at renewal", "High");
   if (data.existingOversight === "none")
-    drivers.push("No formal oversight — likely coverage exclusion");
+    addDriver("No formal oversight", "Likely coverage exclusion without human oversight evidence", "High");
 
   // Incident history
   const incidentBoost =
@@ -159,7 +168,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.incidentHistory === "minor" ? 4 : 0;
 
   if (data.incidentHistory === "significant" || data.incidentHistory === "multiple")
-    drivers.push("Prior incidents — expect higher premiums or policy exclusions");
+    addDriver("Prior AI incidents", "Expect higher premiums or policy exclusions", "High");
 
   // Deployment exposure
   const exposureBoost =
@@ -167,7 +176,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.deploymentType === "both" ? 12 : 0;
 
   if (data.deploymentType !== "internal" && data.deploymentType !== "self-hosted")
-    drivers.push("Customer-facing AI — reputational risk affects insurability");
+    addDriver("Customer-facing AI", "Reputational risk affects insurability", "Medium");
 
   // Maturity & frequency
   const maturityBoost =
@@ -182,12 +191,12 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
   // Auditability
   const noAuditTrail = !data.auditTrailCompleteness || data.auditTrailCompleteness === "none";
   if (noAuditTrail)
-    drivers.push("No audit trail — insurers require decision logs for claims handling");
+    addDriver("No audit trail", "Insurers require decision logs for claims handling", "High");
 
   // Kill switch
   const noKillSwitch = !data.killSwitch || data.killSwitch === "none" || data.killSwitch === "code-deploy";
   if (noKillSwitch)
-    drivers.push("No effective kill switch — inability to stop AI quickly is a coverage concern");
+    addDriver("No effective kill switch", "Inability to stop the AI quickly is a coverage concern", "High");
 
   // ── NEW: Insurance coverage check ─────────────────────────────
   const coverageGap = data.aiCoverageCheck === "gap-identified" || data.aiCoverageCheck === "no-coverage";
@@ -196,9 +205,9 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     data.aiCoverageCheck === "gap-identified" ? 10 :
     data.aiCoverageCheck === "uncertain" ? 6 : 0;
   if (coverageGap)
-    drivers.push("AI coverage gap confirmed — current policy does not cover AI-related claims");
+    addDriver("AI coverage gap confirmed", "Current policy does not cover AI-related claims", "High");
   else if (coverageUncertain)
-    drivers.push("AI coverage unverified — policy wording has not been checked for AI exclusions");
+    addDriver("AI coverage unverified", "Policy wording has not been checked for AI exclusions", "Medium");
 
   // ── NEW: Consumer Duty ─────────────────────────────────────────
   const isCustomerFacing = data.deploymentType === "customer" || data.deploymentType === "both";
@@ -211,35 +220,35 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     (isCustomerFacing && noVulnerableHandling ? 6 : 0);
 
   if (isCustomerFacing && noConsumerRedress)
-    drivers.push("No consumer redress mechanism — FCA Consumer Duty requires a complaints/appeals process for AI decisions");
+    addDriver("No consumer redress mechanism", "FCA Consumer Duty requires a complaints/appeals process for AI decisions", "High");
   if (isCustomerFacing && noConsumerExplainability)
-    drivers.push("No consumer-facing explanation of AI decisions — GDPR Article 22 and Consumer Duty obligation");
+    addDriver("No consumer-facing explanation of AI decisions", "GDPR Article 22 and Consumer Duty obligation", "High");
   if (isCustomerFacing && noVulnerableHandling)
-    drivers.push("No vulnerable customer handling — Consumer Duty requires differentiated approach");
+    addDriver("No vulnerable customer handling", "Consumer Duty requires a differentiated approach", "Medium");
 
   // ── NEW: PRA SS1/23 — independent validation ──────────────────
   const noIndependentValidation = data.independentValidation === "none" || !data.independentValidation;
   const validationPenalty = noIndependentValidation && data.regulatedEntity ? 8 : 0;
   if (noIndependentValidation && data.regulatedEntity)
-    drivers.push("No independent model validation — PRA SS1/23 requires validation separate from the build team");
+    addDriver("No independent model validation", "PRA SS1/23 requires validation separate from the build team", "High");
 
   // ── NEW: SMF accountability ────────────────────────────────────
   const noSmf = !data.smfAccountability;
   const smfPenalty = noSmf && data.regulatedEntity ? 6 : 0;
   if (noSmf && data.regulatedEntity)
-    drivers.push("No named Senior Manager accountable for this AI — SMF regime requires designated accountability");
+    addDriver("No named Senior Manager accountable for this AI", "SMF regime requires designated accountability", "Medium");
 
   // ── NEW: Formal AI policy ─────────────────────────────────────
   const noFormalPolicy = data.formalAiPolicy === "no" || !data.formalAiPolicy;
   const policyPenalty = noFormalPolicy ? 6 : 0;
   if (noFormalPolicy)
-    drivers.push("No formal AI policy — required by ISO 42001 and expected by auditors and underwriters");
+    addDriver("No formal AI policy", "Required by ISO 42001 and expected by auditors and underwriters", "Medium");
 
   // ── NEW: Incident response plan ───────────────────────────────
   const noIncidentPlan = !data.incidentResponsePlan;
   const incidentPlanPenalty = noIncidentPlan ? 5 : 0;
   if (noIncidentPlan)
-    drivers.push("No AI incident response plan — insurers need documented remediation procedures for claims");
+    addDriver("No AI incident response plan", "Insurers need documented remediation procedures for claims", "Medium");
 
   // --- Overall Risk Score ---
   const raw =
@@ -414,6 +423,11 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
       status: consumerDutyMissing.length === 0 ? "ok" : consumerDutyMissing.length <= 1 ? "partial" : "gap",
       missing: consumerDutyMissing,
       impact: "May affect approval of customer-facing AI and attract FCA scrutiny at renewal",
+      requiredEvidence: [
+        "Customer outcome testing results",
+        "Consumer-facing explainability notes",
+        "Governance approval record",
+      ],
       suggestedOwner: "Compliance lead / SMF holder",
     },
     {
@@ -421,6 +435,11 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
       status: praMissing.length === 0 ? "ok" : praMissing.length <= 1 ? "partial" : "gap",
       missing: praMissing,
       impact: "High underwriting concern — model risk framework expected for regulated firms",
+      requiredEvidence: [
+        "Independent validation report",
+        "Model risk acceptance record",
+        "Named accountable owner (SMF) mapping",
+      ],
       suggestedOwner: "Chief Risk Officer / model risk function",
     },
     {
@@ -428,6 +447,11 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
       status: isoMissing.length === 0 ? "ok" : isoMissing.length <= 1 ? "partial" : "gap",
       missing: isoMissing,
       impact: "Weakens the governance evidence relied on by auditors and underwriters",
+      requiredEvidence: [
+        "AI management system documentation",
+        "Control register",
+        "Governance review cadence records",
+      ],
       suggestedOwner: "Head of AI governance / CTO",
     },
     {
@@ -435,6 +459,11 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
       status: gdprMissing.length === 0 ? "ok" : gdprMissing.length <= 1 ? "partial" : "gap",
       missing: gdprMissing,
       impact: "Regulatory exposure including ICO enforcement; affects insurability of data-related claims",
+      requiredEvidence: [
+        "Completed DPIA",
+        "Article 22 safeguards documentation",
+        "Third-party data processing agreements",
+      ],
       suggestedOwner: "Data Protection Officer",
     },
   ];
@@ -459,7 +488,13 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     exclusions: Array.from(new Set(exclusions)),
     summary,
     categoryScores,
-    riskDrivers: Array.from(new Set(drivers)).slice(0, 10),
+    riskDrivers: Array.from(new Map(drivers.map((d) => [d.driver, d])).values())
+      .sort(
+        (a, b) =>
+          ["High", "Medium", "Low"].indexOf(a.severity) -
+          ["High", "Medium", "Low"].indexOf(b.severity)
+      )
+      .slice(0, 12),
     validUntil: addDaysISO(riskLevel === "High" ? 30 : riskLevel === "Medium" ? 60 : 90),
     recommendations: { critical, high, medium },
     complianceGaps: complianceGaps.filter((g) => g.missing.length > 0),

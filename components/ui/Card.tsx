@@ -13,7 +13,7 @@ export default function Card({ title, icon, children, className = "", headerRigh
   const surface = subtle ? "bg-slate-50 border-slate-200" : "bg-white border-slate-200";
 
   return (
-    <section className={["rounded-sm border shadow-none", surface, "p-5 sm:p-6", className].join(" ")}>
+    <section className={["rounded-sm border shadow-none", surface, "p-5 sm:p-7", className].join(" ")}>
       {(title || headerRight || icon) && (
         <div className="mb-4 flex items-start justify-between gap-4 pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
