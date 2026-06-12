@@ -26,6 +26,8 @@ import { DEMO_SUBMISSION } from "../../lib/risk/demo-data";
 import { encodeShareData, decodeShareData } from "../../lib/risk/share";
 import { ActionPlanPanel } from "../../components/results/ActionPlanPanel";
 import { AssessmentHistory } from "../../components/results/AssessmentHistory";
+import { buildInsuranceBrief } from "../../lib/risk/insurance";
+import { InsuranceBriefPanel } from "../../components/results/InsuranceBriefPanel";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -84,6 +86,11 @@ export default function ResultsPage() {
     () => (submission ? daysAgoLabel(submission.submittedAt) : ""),
     [submission]
   );
+
+  const insuranceBrief = useMemo(() => {
+    if (!submission || !results) return null;
+    return buildInsuranceBrief(submission.data, results);
+  }, [submission, results]);
 
   const scoreDelta = useMemo(() => {
     if (!submission || !results || isDemo || submission.id === "shared") return undefined;
@@ -203,6 +210,13 @@ export default function ResultsPage() {
                 exclusions={results.exclusions}
               />
             </Card>
+
+            {/* Insurance readiness brief */}
+            {insuranceBrief && (
+              <Card title="Insurance Readiness">
+                <InsuranceBriefPanel brief={insuranceBrief} />
+              </Card>
+            )}
 
             {/* Risk drivers */}
             <Card title="Risk Drivers">
