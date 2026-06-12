@@ -26,6 +26,7 @@ export interface ComplianceGap {
   status: "ok" | "partial" | "gap";
   missing: string[];
   impact: string;
+  underwritingImpact: string;
   requiredEvidence: string[];
   suggestedOwner: string;
 }
@@ -428,6 +429,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
         "Consumer-facing explainability notes",
         "Governance approval record",
       ],
+      underwritingImpact: "Underwriter may request additional evidence of customer outcome testing and explainability before accepting AI-related exposure",
       suggestedOwner: "Compliance lead / SMF holder",
     },
     {
@@ -440,6 +442,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
         "Model risk acceptance record",
         "Named accountable owner (SMF) mapping",
       ],
+      underwritingImpact: "AI-related claims or model failure exposure may be questioned, excluded, or made subject to additional conditions",
       suggestedOwner: "Chief Risk Officer / model risk function",
     },
     {
@@ -452,6 +455,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
         "Control register",
         "Governance review cadence records",
       ],
+      underwritingImpact: "Underwriter may treat the AI governance process as immature or insufficiently controlled",
       suggestedOwner: "Head of AI governance / CTO",
     },
     {
@@ -464,6 +468,7 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
         "Article 22 safeguards documentation",
         "Third-party data processing agreements",
       ],
+      underwritingImpact: "Data protection and privacy-related exposure may trigger additional underwriting questions or exclusions",
       suggestedOwner: "Data Protection Officer",
     },
   ];

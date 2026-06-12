@@ -43,7 +43,15 @@ export function ComplianceGaps({ gaps }: { gaps: ComplianceGap[] }) {
                   ))}
                 </ul>
               </td>
-              <td className="py-3 pr-4 text-slate-600 leading-relaxed">{gap.impact}</td>
+              <td className="py-3 pr-4 text-slate-600 leading-relaxed">
+                <p>{gap.impact}</p>
+                <p className="mt-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Underwriting:
+                  </span>{" "}
+                  {gap.underwritingImpact}
+                </p>
+              </td>
               <td className="py-3 pr-4 text-slate-600 leading-relaxed">
                 <ul className="space-y-1">
                   {gap.requiredEvidence.map((e) => (

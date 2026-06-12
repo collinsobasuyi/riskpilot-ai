@@ -32,6 +32,34 @@ import {
 import { buildEvidenceChecklist } from "../../lib/risk/evidence";
 import { EvidenceChecklist } from "../../components/results/EvidenceChecklist";
 import { VerdictPanel } from "../../components/results/VerdictPanel";
+import {
+  buildUnderwritingSummary,
+  buildUnderwriterQuestions,
+} from "../../lib/risk/underwriting";
+import { UnderwritingActionSummary } from "../../components/results/UnderwritingActionSummary";
+import { UnderwriterQuestions } from "../../components/results/UnderwriterQuestions";
+import { projectRemediation } from "../../lib/risk/projection";
+import { ProjectionTable } from "../../components/results/ProjectionTable";
+import { VerificationStamp } from "../../components/results/VerificationStamp";
+
+// ── Export modes ──────────────────────────────────────────────────────────────
+
+type ExportMode = "full" | "broker" | "underwriter" | "compliance" | "board";
+
+const EXPORT_SECTIONS: Record<Exclude<ExportMode, "full">, readonly string[]> = {
+  broker: ["actionSummary", "execSummary", "readiness", "brokerSummary", "questions", "verdict", "verification"],
+  underwriter: ["actionSummary", "execSummary", "readiness", "scoreBreakdown", "riskDrivers", "compliance", "evidence", "questions", "recommendations", "verdict", "verification"],
+  compliance: ["execSummary", "compliance", "evidence", "recommendations", "actionPlan", "verification"],
+  board: ["actionSummary", "execSummary", "readiness", "projection", "verdict", "verification"],
+};
+
+const EXPORT_OPTIONS: { value: ExportMode; label: string; description: string }[] = [
+  { value: "full", label: "Full Report", description: "The complete evidence report" },
+  { value: "broker", label: "Broker Summary", description: "Insurance readiness, blockers, and next actions" },
+  { value: "underwriter", label: "Underwriter Pack", description: "Evidence-oriented report with risk drivers, gaps, and verification" },
+  { value: "compliance", label: "Compliance Pack", description: "Framework mapping, evidence checklist, remediation plan" },
+  { value: "board", label: "Board Summary", description: "Executive overview of risk status and required actions" },
+];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -54,6 +82,15 @@ export default function ResultsPage() {
   const [isDemo, setIsDemo] = useState(false);
   const [history, setHistory] = useState<StoredSubmission[]>([]);
   const [copied, setCopied] = useState(false);
+  const [exportMode, setExportMode] = useState<ExportMode>("full");
+
+  // Audience exports temporarily hide non-relevant sections for printing;
+  // restore the full report once the print dialog closes.
+  useEffect(() => {
+    const reset = () => setExportMode("full");
+    window.addEventListener("afterprint", reset);
+    return () => window.removeEventListener("afterprint", reset);
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -101,6 +138,21 @@ export default function ResultsPage() {
     [submission]
   );
 
+  const underwritingCards = useMemo(
+    () => (submission && results ? buildUnderwritingSummary(submission.data, results) : []),
+    [submission, results]
+  );
+
+  const underwriterQuestions = useMemo(
+    () => (submission ? buildUnderwriterQuestions(submission.data) : []),
+    [submission]
+  );
+
+  const projection = useMemo(
+    () => (submission ? projectRemediation(submission.data) : null),
+    [submission]
+  );
+
   const scoreDelta = useMemo(() => {
     if (!submission || !results || isDemo || submission.id === "shared") return undefined;
     const prev = history.find(
@@ -112,6 +164,15 @@ export default function ResultsPage() {
   }, [submission, results, history, isDemo]);
 
   const handlePrint = () => window.print();
+
+  function handleExport(mode: ExportMode) {
+    setExportMode(mode);
+    // Let React re-render with the filtered sections before opening the dialog
+    setTimeout(() => window.print(), 150);
+  }
+
+  const show = (section: string) =>
+    exportMode === "full" || EXPORT_SECTIONS[exportMode].includes(section);
 
   function handleCopyLink() {
     if (!submission) return;
@@ -167,6 +228,26 @@ export default function ResultsPage() {
                   {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
                   {copied ? "Copied!" : "Copy link"}
                 </button>
+                <label className="inline-flex items-center gap-1.5 rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
+                  Export
+                  <select
+                    aria-label="Export report for a specific audience"
+                    className="cursor-pointer bg-transparent text-sm font-medium text-slate-700 outline-none"
+                    value=""
+                    onChange={(e) => {
+                      if (e.target.value) handleExport(e.target.value as ExportMode);
+                    }}
+                  >
+                    <option value="" disabled>
+                      Choose…
+                    </option>
+                    {EXPORT_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value} title={opt.description}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <button
                   onClick={handlePrint}
                   className="inline-flex items-center gap-1.5 rounded-sm border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
@@ -211,7 +292,15 @@ export default function ResultsPage() {
               readiness={insuranceBrief?.readiness}
             />
 
+            {/* Underwriting action summary */}
+            {show("actionSummary") && underwritingCards.length > 0 && (
+              <Card title="Underwriting Action Summary">
+                <UnderwritingActionSummary cards={underwritingCards} />
+              </Card>
+            )}
+
             {/* Summary */}
+            {show("execSummary") && (
             <Card title="Executive Summary">
               <div className="space-y-3 text-base text-slate-700 leading-relaxed">
                 <p>
@@ -225,9 +314,10 @@ export default function ResultsPage() {
               </div>
               <p className="mt-3 text-xs text-slate-400">Assessed {assessmentAge}</p>
             </Card>
+            )}
 
             {/* Insurance readiness verdict */}
-            {insuranceBrief && (
+            {show("readiness") && insuranceBrief && (
               <Card title="Insurance Readiness Verdict">
                 <ReadinessVerdictPanel
                   brief={insuranceBrief}
@@ -239,79 +329,122 @@ export default function ResultsPage() {
             )}
 
             {/* Score breakdown */}
-            <Card title="AI Risk Score Breakdown">
-              <CategoryScores scores={results.categoryScores} />
-            </Card>
+            {show("scoreBreakdown") && (
+              <Card title="AI Risk Score Breakdown">
+                <CategoryScores scores={results.categoryScores} />
+              </Card>
+            )}
 
             {/* Broker summary */}
-            {insuranceBrief && (
+            {show("brokerSummary") && insuranceBrief && (
               <Card title="Broker Summary">
                 <BrokerSummaryPanel brief={insuranceBrief} />
               </Card>
             )}
 
             {/* Risk drivers */}
-            <Card title="Risk Drivers">
-              <RiskDriversList drivers={results.riskDrivers} />
-            </Card>
+            {show("riskDrivers") && (
+              <Card title="Risk Drivers">
+                <RiskDriversList drivers={results.riskDrivers} />
+              </Card>
+            )}
 
             {/* Compliance gaps */}
-            <Card title="Compliance Gaps">
-              <ComplianceGaps gaps={results.complianceGaps} />
-            </Card>
+            {show("compliance") && (
+              <Card title="Compliance Gaps">
+                <ComplianceGaps gaps={results.complianceGaps} />
+              </Card>
+            )}
 
             {/* Evidence checklist */}
-            <Card title="Evidence Checklist">
-              <EvidenceChecklist items={evidenceChecklist} />
-            </Card>
+            {show("evidence") && (
+              <Card title="Evidence Checklist">
+                <EvidenceChecklist items={evidenceChecklist} />
+              </Card>
+            )}
+
+            {/* Likely underwriter questions */}
+            {show("questions") && (
+              <Card title="Likely Underwriter Questions">
+                <UnderwriterQuestions questions={underwriterQuestions} />
+              </Card>
+            )}
 
             {/* Recommendations */}
-            <Card title="Recommendations">
-              <RecommendationsPanel recommendations={results.recommendations} />
-            </Card>
+            {show("recommendations") && (
+              <Card title="Recommendations">
+                <RecommendationsPanel recommendations={results.recommendations} />
+              </Card>
+            )}
+
+            {/* Projected readiness */}
+            {show("projection") && projection && (
+              <Card title="Projected Readiness After Remediation">
+                <ProjectionTable projection={projection} />
+              </Card>
+            )}
 
             {/* 90-day action plan */}
-            <Card title="30 / 60 / 90 Day Action Plan">
-              <ActionPlanPanel recommendations={results.recommendations} />
-            </Card>
+            {show("actionPlan") && (
+              <Card title="30 / 60 / 90 Day Action Plan">
+                <ActionPlanPanel recommendations={results.recommendations} />
+              </Card>
+            )}
 
             {/* Benchmark */}
-            <Card title="Industry Benchmark">
-              <BenchmarkPanel
-                benchmark={results.benchmark}
-                industry={fd.industry}
-                riskScore={results.riskScore}
-              />
-            </Card>
+            {show("benchmark") && (
+              <Card title="Industry Benchmark">
+                <BenchmarkPanel
+                  benchmark={results.benchmark}
+                  industry={fd.industry}
+                  riskScore={results.riskScore}
+                />
+              </Card>
+            )}
 
             {/* Assessment history */}
-            {!isDemo && submission.id !== "shared" && (
+            {exportMode === "full" && !isDemo && submission.id !== "shared" && (
               <Card title="Previous Assessments">
                 <AssessmentHistory history={history} currentId={submission.id} />
               </Card>
             )}
 
             {/* Closing verdict */}
-            {insuranceBrief && <VerdictPanel results={results} brief={insuranceBrief} />}
+            {show("verdict") && insuranceBrief && (
+              <VerdictPanel results={results} brief={insuranceBrief} />
+            )}
+
+            {/* Report verification */}
+            {show("verification") && (
+              <VerificationStamp
+                data={fd}
+                reportId={`VER-${new Date().getFullYear()}-${submission.id.slice(0, 6).toUpperCase()}`}
+                generatedOn={formatDate()}
+              />
+            )}
 
             {/* Broker feedback prompt */}
-            <div className="rounded-sm border border-dashed border-blue-300 bg-blue-50/50 px-5 py-4 text-sm text-slate-700 leading-relaxed">
-              <p className="font-semibold text-slate-900">Broker feedback requested</p>
-              <p className="mt-1.5">
-                This is a prototype report created for validation. We are seeking feedback from
-                brokers, underwriters, compliance professionals, and risk consultants.
-              </p>
-              <ul className="mt-2.5 space-y-1 text-slate-600">
-                <li>
-                  · Would this report help prepare a client before cyber, Professional Indemnity,
-                  or Technology E&amp;O review?
-                </li>
-                <li>· What evidence would an underwriter need before trusting this report?</li>
-                <li>· Which sections are useful, and which would you ignore?</li>
-                <li>· What is missing?</li>
-                <li>· Who would usually own this problem inside a client organisation?</li>
-              </ul>
-            </div>
+            {exportMode === "full" && (
+              <div className="rounded-sm border border-dashed border-blue-300 bg-blue-50/50 px-5 py-4 text-sm text-slate-700 leading-relaxed">
+                <p className="font-semibold text-slate-900">Broker feedback requested</p>
+                <p className="mt-1.5">
+                  This is a prototype report created for validation. We are seeking feedback from
+                  brokers, underwriters, compliance professionals, and risk consultants.
+                </p>
+                <ol className="mt-2.5 list-decimal space-y-1 pl-5 text-slate-600">
+                  <li>
+                    Would this help prepare a client before Cyber, Professional Indemnity, or
+                    Technology E&amp;O review?
+                  </li>
+                  <li>Which sections would be useful in a real broker or underwriting workflow?</li>
+                  <li>Which sections would you ignore?</li>
+                  <li>What evidence would an underwriter need before trusting this report?</li>
+                  <li>What is missing?</li>
+                  <li>Who would usually own this problem inside a client organisation?</li>
+                  <li>What would make this commercially useful?</li>
+                </ol>
+              </div>
+            )}
 
             {/* Report footer */}
             <p className="text-center text-xs text-slate-400">
