@@ -15,9 +15,9 @@ const STATUS_LABEL: Record<EvidenceStatus, string> = {
 };
 
 const STATUS_ICON: Record<EvidenceStatus, React.ReactNode> = {
-  present: <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />,
-  partial: <MinusCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />,
-  missing: <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />,
+  present: <CheckCircle2 className="h-4 w-4 shrink-0 text-green-600" />,
+  partial: <MinusCircle className="h-4 w-4 shrink-0 text-amber-500" />,
+  missing: <XCircle className="h-4 w-4 shrink-0 text-red-500" />,
 };
 
 export function EvidenceChecklist({ items }: { items: EvidenceItem[] }) {
@@ -30,40 +30,55 @@ export function EvidenceChecklist({ items }: { items: EvidenceItem[] }) {
 
   return (
     <div>
-      <p className="mb-5 text-sm text-slate-600 leading-relaxed">
+      <p className="mb-4 text-sm text-slate-600 leading-relaxed">
         {missingCount === 0 && partialCount === 0
           ? "All expected underwriting evidence was identified in this assessment."
           : `Of ${items.length} evidence items underwriters typically request, ${missingCount} ${
               missingCount === 1 ? "is" : "are"
             } missing${partialCount > 0 ? ` and ${partialCount} ${partialCount === 1 ? "is" : "are"} partial` : ""}.`}
       </p>
-      <div className="space-y-5">
-        {groups.map((group) => (
-          <div key={group.category}>
-            <p className="mb-2.5 text-xs font-semibold uppercase tracking-widest text-slate-500">
-              {group.category}
-            </p>
-            <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr className="border-b border-slate-200 text-xs font-semibold uppercase tracking-widest text-slate-500">
+            <th className="py-2 pr-4 font-semibold">Evidence item</th>
+            <th className="py-2 text-right font-semibold">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {groups.map((group) => (
+            <React.Fragment key={group.category}>
+              <tr className="border-b border-slate-100 bg-slate-50">
+                <td
+                  colSpan={2}
+                  className="py-2 pr-4 pl-2 text-xs font-semibold uppercase tracking-widest text-slate-500"
+                >
+                  {group.category}
+                </td>
+              </tr>
               {group.items.map((item) => (
-                <li key={item.label} className="flex items-start gap-2.5">
-                  {STATUS_ICON[item.status]}
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">
-                      {item.label}
-                      <span
-                        className={`ml-2 rounded-sm border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${STATUS_BADGE[item.status]}`}
-                      >
-                        {STATUS_LABEL[item.status]}
-                      </span>
-                    </p>
-                    <p className="text-xs text-slate-500 leading-relaxed">{item.detail}</p>
-                  </div>
-                </li>
+                <tr key={item.label} className="border-b border-slate-100 last:border-0">
+                  <td className="py-2.5 pr-4 pl-2">
+                    <div className="flex items-start gap-2.5">
+                      <span className="mt-0.5">{STATUS_ICON[item.status]}</span>
+                      <div>
+                        <p className="text-sm font-medium text-slate-800">{item.label}</p>
+                        <p className="text-xs text-slate-500 leading-relaxed">{item.detail}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-2.5 text-right align-top">
+                    <span
+                      className={`inline-flex rounded-sm border px-2 py-0.5 text-xs font-medium ${STATUS_BADGE[item.status]}`}
+                    >
+                      {STATUS_LABEL[item.status]}
+                    </span>
+                  </td>
+                </tr>
               ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

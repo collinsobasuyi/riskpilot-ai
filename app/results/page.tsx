@@ -17,7 +17,6 @@ import { computeResults } from "../../lib/risk/scoring";
 import { ReportHeader } from "../../components/results/ReportHeader";
 import { CategoryScores } from "../../components/results/CategoryScores";
 import { RiskDriversList } from "../../components/results/RiskDriversList";
-import { RecommendationsPanel } from "../../components/results/RecommendationsPanel";
 import { ComplianceGaps } from "../../components/results/ComplianceGaps";
 import { BenchmarkPanel } from "../../components/results/BenchmarkPanel";
 import { DEMO_SUBMISSION } from "../../lib/risk/demo-data";
@@ -48,8 +47,8 @@ type ExportMode = "full" | "broker" | "underwriter" | "compliance" | "board";
 
 const EXPORT_SECTIONS: Record<Exclude<ExportMode, "full">, readonly string[]> = {
   broker: ["actionSummary", "execSummary", "readiness", "brokerSummary", "questions", "verdict", "verification"],
-  underwriter: ["actionSummary", "execSummary", "readiness", "scoreBreakdown", "riskDrivers", "compliance", "evidence", "questions", "recommendations", "verdict", "verification"],
-  compliance: ["execSummary", "compliance", "evidence", "recommendations", "actionPlan", "verification"],
+  underwriter: ["actionSummary", "execSummary", "readiness", "scoreBreakdown", "riskDrivers", "compliance", "evidence", "questions", "actionPlan", "verdict", "verification"],
+  compliance: ["execSummary", "compliance", "evidence", "actionPlan", "verification"],
   board: ["actionSummary", "execSummary", "readiness", "projection", "verdict", "verification"],
 };
 
@@ -370,10 +369,10 @@ export default function ResultsPage() {
               </Card>
             )}
 
-            {/* Recommendations */}
-            {show("recommendations") && (
-              <Card title="Recommendations">
-                <RecommendationsPanel recommendations={results.recommendations} />
+            {/* Recommendations / 30-60-90 action plan (merged — same underlying data) */}
+            {show("actionPlan") && (
+              <Card title="Recommendations — 30 / 60 / 90 Day Action Plan">
+                <ActionPlanPanel recommendations={results.recommendations} />
               </Card>
             )}
 
@@ -381,13 +380,6 @@ export default function ResultsPage() {
             {show("projection") && projection && (
               <Card title="Projected Readiness After Remediation">
                 <ProjectionTable projection={projection} />
-              </Card>
-            )}
-
-            {/* 90-day action plan */}
-            {show("actionPlan") && (
-              <Card title="30 / 60 / 90 Day Action Plan">
-                <ActionPlanPanel recommendations={results.recommendations} />
               </Card>
             )}
 
