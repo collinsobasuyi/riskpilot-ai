@@ -174,6 +174,15 @@ export default function ResultsPage() {
               </div>
             </div>
 
+            {/* Prototype disclaimer */}
+            <div className="rounded-sm border border-slate-300 bg-slate-100 px-4 py-3 text-xs text-slate-600 leading-relaxed">
+              <span className="font-semibold text-slate-800">
+                Prototype report — for validation only.
+              </span>{" "}
+              This is a sample prototype report created for product validation. It is not an
+              official insurance, legal, or regulatory assessment.
+            </div>
+
             {/* Demo banner */}
             {isDemo && (
               <div className="flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800 print:hidden">
@@ -256,6 +265,15 @@ export default function ResultsPage() {
 
             {/* Closing verdict */}
             {insuranceBrief && <VerdictPanel results={results} brief={insuranceBrief} />}
+
+            {/* Broker feedback prompt */}
+            <div className="rounded-sm border border-dashed border-blue-300 bg-blue-50/50 px-4 py-3 text-sm text-slate-700 leading-relaxed">
+              <p className="font-semibold text-slate-900">Broker feedback requested</p>
+              <p className="mt-1">
+                Would this report help prepare a client for cyber, PI, or Tech E&amp;O insurance
+                review? What evidence would an underwriter need before trusting it?
+              </p>
+            </div>
 
             {/* Footer CTA */}
             {!isDemo && (

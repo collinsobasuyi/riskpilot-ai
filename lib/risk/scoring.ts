@@ -349,8 +349,8 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
 
   const summary =
     coverageEligibility === "Eligible"
-      ? `${displayName(data)} scores ${riskScore}/100. Generally eligible for coverage with ${coverageTier} terms. Address the ${critical.length} critical item${critical.length !== 1 ? "s" : ""} before renewal to improve terms and reduce exclusions.`
-      : `${displayName(data)} scores ${riskScore}/100. Conditional coverage — address critical recommendations to achieve full eligibility before renewal.`;
+      ? `${displayName(data)} has an AI Risk Score of ${riskScore}/100 (${riskLevel.toLowerCase()} risk). Generally eligible for coverage with ${coverageTier} terms. Address the ${critical.length} critical item${critical.length !== 1 ? "s" : ""} before renewal to improve terms and reduce exclusions.`
+      : `${displayName(data)} has an AI Risk Score of ${riskScore}/100 (${riskLevel.toLowerCase()} risk). Conditional coverage — address critical recommendations to achieve full eligibility before renewal.`;
 
   // --- Category scores ---
   const categoryScores: CategoryScore[] = [
