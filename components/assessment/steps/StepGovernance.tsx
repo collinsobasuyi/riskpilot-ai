@@ -225,7 +225,7 @@ export function StepGovernance({
           <div className="flex items-center justify-between mb-4">
             <SectionTitle
               icon={<FileCheck className="h-4 w-4" />}
-              title="PRA SS1/23 &amp; Senior Management"
+              title="PRA SS1/23 & Senior Management"
               subtitle="Additional obligations for FCA / PRA regulated firms."
             />
             <ConditionalBadge rule="Shown — FCA/PRA regulated" />
