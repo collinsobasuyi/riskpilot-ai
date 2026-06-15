@@ -50,6 +50,28 @@ export type ConsumerExplainability = "automated" | "on-request" | "none" | "not-
 export type IndependentValidation = "internal-independent" | "external" | "none" | "not-yet";
 export type FormalAiPolicy = "yes" | "in-progress" | "no";
 
+export type AssessmentPurpose =
+  | "insurance-renewal"
+  | "broker-review"
+  | "cyber-pi-review"
+  | "internal-audit"
+  | "compliance-review"
+  | "other";
+
+export type DpiaStatus = "yes" | "in-progress" | "no" | "not-required";
+
+export type VendorDueDiligenceStatus =
+  | "formal"
+  | "informal"
+  | "none"
+  | "not-applicable";
+
+export type DataProcessingAgreementStatus =
+  | "yes"
+  | "partial"
+  | "none"
+  | "not-applicable";
+
 export interface AssessmentFormData {
   companyName: string;
   industry: IndustrySector;
@@ -136,6 +158,12 @@ export interface AssessmentFormData {
   // New: ISO 42001 + general governance
   formalAiPolicy?: FormalAiPolicy;
   incidentResponsePlan?: boolean;
+
+  // Assessment rebuild
+  assessmentPurpose?: AssessmentPurpose;
+  dpiaStatus?: DpiaStatus;
+  vendorDueDiligenceStatus?: VendorDueDiligenceStatus;
+  dataProcessingAgreementStatus?: DataProcessingAgreementStatus;
 
   additionalContext: string;
 }
@@ -250,6 +278,11 @@ export const DEFAULT_ASSESSMENT_FORM: AssessmentFormData = {
   smfAccountability: false,
   formalAiPolicy: undefined,
   incidentResponsePlan: false,
+
+  assessmentPurpose: undefined,
+  dpiaStatus: undefined,
+  vendorDueDiligenceStatus: undefined,
+  dataProcessingAgreementStatus: undefined,
 
   additionalContext: "",
 };
