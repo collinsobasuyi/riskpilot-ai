@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Shield, Building, Globe, FileText, Database, FileCheck } from "lucide-react";
+import { Shield, Building, FileCheck, BarChart3 } from "lucide-react";
 import Container from "../../components/layout/Container";
 import {
   AssessmentErrors,
@@ -20,15 +20,14 @@ import {
   safeLocalStorageSet,
   toggleExclusive,
 } from "../../lib/risk/schema";
-import { StepFirmDetails } from "../../components/assessment/steps/StepFirmDetails";
 import { StepAiSystem } from "../../components/assessment/steps/StepAiSystem";
-import { StepRiskProfile } from "../../components/assessment/steps/StepRiskProfile";
 import { StepGovernance } from "../../components/assessment/steps/StepGovernance";
-import { StepEvidence } from "../../components/assessment/steps/StepEvidence";
-import { StepReview } from "../../components/assessment/steps/StepReview";
+import { StepControlsEvidence } from "../../components/assessment/steps/StepControlsEvidence";
+import { StepReviewGenerate } from "../../components/assessment/steps/StepReviewGenerate";
 import { StepIndicator } from "../../components/assessment/StepIndicator";
 import { StepNav } from "../../components/assessment/StepNav";
 import { LiveRiskBadge } from "../../components/assessment/LiveRiskBadge";
+import { LiveSidebar } from "../../components/assessment/LiveSidebar";
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
@@ -37,8 +36,6 @@ function validateStep(s: number, formData: AssessmentFormData): AssessmentErrors
   if (s === 0) {
     if (!formData.companyName.trim()) e.companyName = "Company name is required.";
     if (!formData.industry) e.industry = "Select an industry.";
-  }
-  if (s === 1) {
     if (!formData.systemName.trim()) e.systemName = "System name is required.";
     if (!formData.aiUseCase.trim()) e.aiUseCase = "Describe the AI use case.";
   }
@@ -57,20 +54,17 @@ export default function AssessmentPage() {
   const [lastEntry, setLastEntry] = useState<StoredSubmission | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
-  // Restore draft
   useEffect(() => {
     const raw = safeLocalStorageGet(DRAFT_KEY);
     const parsed = safeJsonParse<AssessmentFormData>(raw);
     if (parsed) setFormData(parsed);
   }, []);
 
-  // Load last submission for history banner
   useEffect(() => {
     const history = getHistory();
     if (history.length > 0) setLastEntry(history[0]);
   }, []);
 
-  // Save draft
   useEffect(() => {
     const saved = safeLocalStorageSet(DRAFT_KEY, JSON.stringify(formData));
     setSaveFailed(!saved);
@@ -78,12 +72,10 @@ export default function AssessmentPage() {
 
   const steps = useMemo(
     () => [
-      { title: "Your Firm", icon: <Building className="h-3.5 w-3.5" /> },
-      { title: "AI System", icon: <Globe className="h-3.5 w-3.5" /> },
-      { title: "Risk Profile", icon: <FileText className="h-3.5 w-3.5" /> },
+      { title: "Your AI System", icon: <Building className="h-3.5 w-3.5" /> },
       { title: "Governance", icon: <Shield className="h-3.5 w-3.5" /> },
-      { title: "Evidence", icon: <Database className="h-3.5 w-3.5" /> },
-      { title: "Review", icon: <FileCheck className="h-3.5 w-3.5" /> },
+      { title: "Controls & Evidence", icon: <BarChart3 className="h-3.5 w-3.5" /> },
+      { title: "Review & Generate", icon: <FileCheck className="h-3.5 w-3.5" /> },
     ],
     []
   );
@@ -124,10 +116,19 @@ export default function AssessmentPage() {
   }
 
   function goTo(i: number) {
-    if (i <= step) { setStep(i); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    if (i <= step) {
+      setStep(i);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     for (let s = step; s < i; s++) {
       const e = validateStep(s, formData);
-      if (Object.keys(e).length) { setErrors(e); setStep(s); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      if (Object.keys(e).length) {
+        setErrors(e);
+        setStep(s);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
     }
     setStep(i);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -136,11 +137,20 @@ export default function AssessmentPage() {
   async function handleSubmit() {
     for (let s = 0; s < steps.length - 1; s++) {
       const e = validateStep(s, formData);
-      if (Object.keys(e).length) { setErrors(e); setStep(s); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      if (Object.keys(e).length) {
+        setErrors(e);
+        setStep(s);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
     }
     setSubmitting(true);
     const id = makeAssessmentId();
-    const submission: StoredSubmission = { id, submittedAt: new Date().toISOString(), data: formData };
+    const submission: StoredSubmission = {
+      id,
+      submittedAt: new Date().toISOString(),
+      data: formData,
+    };
     safeLocalStorageSet(SUBMISSION_KEY, JSON.stringify(submission));
     appendToHistory(submission);
     router.push("/results");
@@ -151,7 +161,7 @@ export default function AssessmentPage() {
   return (
     <section className="min-h-screen bg-slate-50 py-10">
       <Container>
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-[1140px]">
 
           {/* Header */}
           <div className="mb-6">
@@ -198,10 +208,10 @@ export default function AssessmentPage() {
 
           {/* Save failure banner */}
           {saveFailed && (
-            <div className="mb-4 flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-base text-amber-800">
+            <div className="mb-4 flex items-start gap-3 rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <span className="shrink-0 font-semibold">⚠</span>
               <span>
-                Draft could not be saved — your browser storage may be full. Your progress is not persisted.{" "}
+                Draft could not be saved — your browser storage may be full.{" "}
                 <button onClick={() => setSaveFailed(false)} className="ml-1 underline hover:no-underline">
                   Dismiss
                 </button>
@@ -209,30 +219,58 @@ export default function AssessmentPage() {
             </div>
           )}
 
-          {/* Live risk badge */}
-          <div className="mb-4">
+          {/* Mobile: live badge above form (hidden on desktop) */}
+          <div className="lg:hidden mb-4">
             <LiveRiskBadge preliminary={preliminary} ready={liveReady} />
           </div>
 
-          {/* Step content */}
-          <div className="rounded-sm border border-slate-200 bg-white p-6 sm:p-8">
-            {step === 0 && <StepFirmDetails data={formData} errors={errors} onChange={handleChange} />}
-            {step === 1 && <StepAiSystem data={formData} errors={errors} onChange={handleChange} onArrayChange={handleArrayChange} />}
-            {step === 2 && <StepRiskProfile data={formData} errors={errors} onChange={handleChange} onArrayChange={handleArrayChange} />}
-            {step === 3 && <StepGovernance data={formData} onChange={handleChange} onArrayChange={handleArrayChange} />}
-            {step === 4 && <StepEvidence data={formData} onChange={handleChange} />}
-            {step === 5 && <StepReview data={formData} preliminary={preliminary} />}
+          {/* Two-column layout */}
+          <div className="flex gap-8 items-start">
 
-            <StepNav
-              step={step}
-              totalSteps={steps.length}
-              onBack={() => goTo(Math.max(step - 1, 0))}
-              onNext={() => goTo(step + 1)}
-              onSubmit={handleSubmit}
-              submitting={submitting}
-            />
+            {/* Form column */}
+            <div className="flex-1 min-w-0">
+              <div className="rounded-sm border border-slate-200 bg-white p-6 sm:p-8">
+                {step === 0 && (
+                  <StepAiSystem
+                    data={formData}
+                    errors={errors}
+                    onChange={handleChange}
+                    onArrayChange={handleArrayChange}
+                  />
+                )}
+                {step === 1 && (
+                  <StepGovernance
+                    data={formData}
+                    onChange={handleChange}
+                    onArrayChange={handleArrayChange}
+                  />
+                )}
+                {step === 2 && (
+                  <StepControlsEvidence
+                    data={formData}
+                    onChange={handleChange}
+                    onArrayChange={handleArrayChange}
+                  />
+                )}
+                {step === 3 && <StepReviewGenerate data={formData} />}
+
+                <StepNav
+                  step={step}
+                  totalSteps={steps.length}
+                  onBack={() => goTo(Math.max(step - 1, 0))}
+                  onNext={() => goTo(step + 1)}
+                  onSubmit={handleSubmit}
+                  submitting={submitting}
+                />
+              </div>
+            </div>
+
+            {/* Desktop sidebar (hidden on mobile) */}
+            <div className="hidden lg:block">
+              <LiveSidebar data={formData} ready={liveReady} />
+            </div>
+
           </div>
-
         </div>
       </Container>
     </section>
