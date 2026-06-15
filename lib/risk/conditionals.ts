@@ -1,8 +1,9 @@
 import { AssessmentFormData } from "./schema";
 
 export function isInsurancePurpose(data: AssessmentFormData): boolean {
-  return ["insurance-renewal", "broker-review", "cyber-pi-review"].includes(
-    data.assessmentPurpose ?? ""
+  const purposes = data.assessmentPurpose ?? [];
+  return purposes.some((p) =>
+    ["insurance-renewal", "broker-review", "cyber-pi-review"].includes(p)
   );
 }
 

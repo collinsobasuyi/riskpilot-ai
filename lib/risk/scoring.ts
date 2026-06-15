@@ -104,10 +104,10 @@ export function computeResults(data: AssessmentFormData): ComputedResults {
     addDriver("Financial / credit data in use", "FCA Consumer Duty considerations apply", "Medium");
 
   // Regulations
-  const hasConsumerDuty = data.regulations?.includes("FCA Consumer Duty");
-  const hasPRA = data.regulations?.includes("PRA Model Risk (SS1/23)");
-  const hasGDPR = data.regulations?.includes("GDPR / UK GDPR");
-  const hasISO = data.regulations?.includes("ISO 42001");
+  const hasConsumerDuty = data.regulatedEntity && (data.regulator === "fca" || data.regulator === "both");
+  const hasPRA = data.regulatedEntity && (data.regulator === "pra" || data.regulator === "both");
+  const hasGDPR = data.dataSensitivity !== "none" || !!data.thirdPartyData;
+  const hasISO = false;
 
   if (hasGDPR && data.dataSensitivity === "sensitive")
     addDriver("GDPR Article 35 DPIA likely required", "Insurers will expect DPIA evidence in due diligence", "High");

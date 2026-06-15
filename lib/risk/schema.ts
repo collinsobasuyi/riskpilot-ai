@@ -160,7 +160,7 @@ export interface AssessmentFormData {
   incidentResponsePlan?: boolean;
 
   // Assessment rebuild
-  assessmentPurpose?: AssessmentPurpose;
+  assessmentPurpose?: AssessmentPurpose[];
   dpiaStatus?: DpiaStatus;
   vendorDueDiligenceStatus?: VendorDueDiligenceStatus;
   dataProcessingAgreementStatus?: DataProcessingAgreementStatus;

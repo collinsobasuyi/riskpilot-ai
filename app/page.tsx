@@ -1,8 +1,8 @@
-// app/page.tsx
 import Link from "next/link";
 import {
   ArrowRight,
   CheckCircle2,
+  XCircle,
   Shield,
   TrendingUp,
   FileCheck,
@@ -12,11 +12,11 @@ import {
   BarChart3,
   Lock,
   Eye,
+  Building,
+  Target,
 } from "lucide-react";
 import Container from "../components/layout/Container";
 import ButtonLink from "../components/ui/ButtonLink";
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function Home() {
   return (
@@ -25,8 +25,6 @@ export default function Home() {
       <section className="bg-slate-900 pt-20 pb-14">
         <Container>
           <div className="mx-auto max-w-4xl">
-
-            {/* Eyebrow */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-sm border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium tracking-widest text-slate-300 uppercase">
               <Shield className="h-3.5 w-3.5 text-blue-400" />
               AI Governance Readiness — UK Regulated Firms
@@ -65,11 +63,10 @@ export default function Home() {
               </Link>
             </div>
 
-            <p className="mt-4 text-base text-slate-500">
+            <p className="mt-4 text-sm text-slate-500">
               Used for PI renewal preparation, FCA compliance reviews, board AI sign-off, and internal risk assurance.
             </p>
 
-            {/* Trust bar */}
             <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-slate-700/60 pt-8 text-xs font-medium tracking-wide text-slate-500 uppercase">
               {[
                 "FCA / PRA aligned",
@@ -106,10 +103,36 @@ export default function Home() {
       </div>
 
       {/* ── The Problem ───────────────────────────────────────────── */}
-      <section id="problem" className="scroll-mt-20 py-14 bg-white">
+      <section id="problem" className="scroll-mt-20 py-16 bg-white">
         <Container>
-          <div className="grid gap-16 lg:grid-cols-2 items-start">
+          {/* Stats strip */}
+          <div className="mb-12 grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                stat: "75%",
+                label: "of UK financial firms are already using AI",
+                source: "Bank of England, 2024",
+              },
+              {
+                stat: "3 in 4",
+                label: "firms lack documented AI governance frameworks",
+                source: "FCA thematic review, 2023",
+              },
+              {
+                stat: "£34.5m",
+                label: "FCA fine for unmonitored algorithmic failure",
+                source: "FCA v Merrill Lynch, 2017",
+              },
+            ].map((s) => (
+              <div key={s.stat} className="rounded-sm border border-slate-200 bg-slate-50 p-5">
+                <p className="text-3xl font-bold text-slate-900">{s.stat}</p>
+                <p className="mt-1 text-sm text-slate-700">{s.label}</p>
+                <p className="mt-2 text-xs text-slate-400">{s.source}</p>
+              </div>
+            ))}
+          </div>
 
+          <div className="grid gap-14 lg:grid-cols-2 items-start">
             {/* Left — statement */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
@@ -129,14 +152,35 @@ export default function Home() {
                 management. The liability sits with your organisation — not the model provider.
               </p>
 
-              <div className="mt-8 p-4 bg-amber-50 border-l-4 border-amber-500">
-                <p className="text-base font-medium text-amber-900">
-                  Without documented governance, firms risk coverage exclusions, higher premiums,
-                  or being uninsurable for specific AI use cases entirely.
-                </p>
+              <div className="mt-6 space-y-3">
+                {[
+                  {
+                    title: "Firms can't answer their insurers",
+                    body: "AI declarations are standard in PI and D&O renewals. Without documented governance, firms face exclusions or coverage gaps they don't even know exist.",
+                  },
+                  {
+                    title: "Firms can't answer their regulators",
+                    body: "FCA Consumer Duty and PRA SS1/23 require evidence that AI is fair, explainable, and overseen. Most firms have the AI. Almost none have the evidence pack.",
+                  },
+                  {
+                    title: "Firms can't answer their boards",
+                    body: "Executives are being asked to sign off on AI governance. Without a structured assessment, sign-off is uninformed — and that itself is a liability.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="flex gap-3 rounded-sm border border-slate-200 bg-slate-50 p-4"
+                  >
+                    <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900">{item.title}</p>
+                      <p className="mt-0.5 text-sm text-slate-500 leading-relaxed">{item.body}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              <div className="mt-8">
+              <div className="mt-7">
                 <Link
                   href="/assessment"
                   className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
@@ -171,8 +215,8 @@ export default function Home() {
                     note: "AML failures linked to AI models face increasing regulatory scrutiny.",
                   },
                   {
-                    q: "Can you demonstrate your AI was operating within approved parameters?",
-                    note: "Audit trails and change management records required for claims.",
+                    q: "Can you demonstrate your AI was within approved parameters?",
+                    note: "Audit trails and change management records are required for claims.",
                   },
                 ].map((item) => (
                   <div
@@ -182,12 +226,19 @@ export default function Home() {
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
                       <div>
-                        <p className="text-base font-semibold text-slate-900">{item.q}</p>
-                        <p className="mt-1 text-sm text-slate-500">{item.note}</p>
+                        <p className="text-sm font-semibold text-slate-900">{item.q}</p>
+                        <p className="mt-1 text-xs text-slate-500">{item.note}</p>
                       </div>
                     </div>
                   </div>
                 ))}
+              </div>
+
+              <div className="mt-5 rounded-sm border border-amber-200 bg-amber-50 p-4">
+                <p className="text-sm font-medium text-amber-900">
+                  Without documented governance, firms risk coverage exclusions, higher premiums,
+                  or being uninsurable for specific AI use cases entirely.
+                </p>
               </div>
             </div>
           </div>
@@ -195,9 +246,9 @@ export default function Home() {
       </section>
 
       {/* ── How It Works ──────────────────────────────────────────── */}
-      <section id="how-it-works" className="scroll-mt-20 py-14 bg-slate-50 border-y border-slate-200">
+      <section id="how-it-works" className="scroll-mt-20 py-16 bg-slate-50 border-y border-slate-200">
         <Container>
-          <div className="text-center mb-10">
+          <div className="text-center mb-12">
             <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
               How It Works
             </p>
@@ -205,51 +256,108 @@ export default function Home() {
               From assessment to evidence pack in three steps.
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base text-slate-500">
-              Designed for compliance teams and technical leads who need something they can
-              put in front of their broker.
+              The same questions your insurer will ask — answered, scored, and packaged for your
+              broker, compliance team, and board.
             </p>
           </div>
 
-          <div className="relative grid gap-8 md:grid-cols-3">
-            {/* Connector line */}
-            <div className="absolute top-8 left-1/6 right-1/6 hidden h-px bg-slate-300 md:block" style={{ left: "18%", right: "18%" }} />
-
+          <div className="grid gap-6 md:grid-cols-3">
             {[
               {
                 step: "01",
-                title: "Free Governance Assessment",
-                body: "Complete a structured 10-minute assessment covering your AI system, governance controls, data handling, and oversight mechanisms.",
+                icon: <Building className="h-4 w-4" />,
+                title: "Complete the Assessment",
+                time: "~10 minutes",
+                body: "Answer a structured set of questions covering your AI system, governance controls, data handling, oversight mechanisms, and evidence posture.",
+                receive: [
+                  "AI system profile",
+                  "Governance & control inventory",
+                  "Data and vendor risk context",
+                  "Regulatory applicability check",
+                ],
                 cta: "Start assessment",
                 href: "/assessment",
               },
               {
                 step: "02",
-                title: "Scored Results & Gap Analysis",
-                body: "Receive your AI Governance Score (0–100) with a breakdown by category, identified risk drivers, and a ranked list of remediation actions.",
+                icon: <BarChart3 className="h-4 w-4" />,
+                title: "Receive Your Score",
+                time: "Instant results",
+                body: "Get your AI Governance Score (0–100), scored across five dimensions with identified risk drivers, regulatory gaps, and a ranked remediation list.",
+                receive: [
+                  "AI Governance Score with tier",
+                  "Five-dimension category breakdown",
+                  "Ranked risk drivers by severity",
+                  "FCA, PRA & ISO 42001 gap mapping",
+                ],
                 cta: "See example output",
-                href: "/#score",
+                href: "/results?demo=1",
               },
               {
                 step: "03",
-                title: "Evidence Pack for Stakeholders",
-                body: "Download a formatted evidence document to share with your broker, compliance team, or board. Use it for renewal discussions, regulatory reviews, and governance sign-off.",
+                icon: <FileCheck className="h-4 w-4" />,
+                title: "Use the Evidence Pack",
+                time: "Ready to share",
+                body: "Download a formatted evidence document structured to share directly with your broker, compliance team, internal audit, or board risk committee.",
+                receive: [
+                  "Broker-ready evidence document",
+                  "Prioritised remediation actions",
+                  "Board-level governance summary",
+                  "Underwriter question responses",
+                ],
                 cta: "See what's covered",
                 href: "/about",
               },
             ].map((item) => (
-              <div key={item.step} className="relative bg-white border border-slate-200 rounded-sm p-6">
-                <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-sm bg-blue-700 text-xs font-bold text-white">
-                  {item.step}
+              <div
+                key={item.step}
+                className="relative flex flex-col rounded-sm border border-slate-200 bg-white p-6"
+              >
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-blue-700 text-xs font-bold text-white">
+                    {item.step}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                    <p className="text-xs font-medium text-blue-600">{item.time}</p>
+                  </div>
                 </div>
-                <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
-                <p className="mt-2 text-base text-slate-500 leading-relaxed">{item.body}</p>
-                <Link
-                  href={item.href}
-                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
-                >
-                  {item.cta}
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </Link>
+                <p className="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+
+                <div className="mt-auto pt-5 border-t border-slate-100 mt-5">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2.5">
+                    You receive
+                  </p>
+                  <ul className="space-y-1.5">
+                    {item.receive.map((r) => (
+                      <li key={r} className="flex items-center gap-2 text-sm text-slate-700">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-green-600 shrink-0" />
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={item.href}
+                    className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
+                  >
+                    {item.cta}
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3">
+            {[
+              "No account required",
+              "Instant scored output",
+              "Downloadable evidence pack",
+              "FCA & PRA framework aligned",
+            ].map((t) => (
+              <div key={t} className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                <CheckCircle2 className="h-3.5 w-3.5 text-green-600" />
+                {t}
               </div>
             ))}
           </div>
@@ -257,14 +365,14 @@ export default function Home() {
       </section>
 
       {/* ── Score Preview ─────────────────────────────────────────── */}
-      <section id="score" className="scroll-mt-20 py-14 bg-white">
+      <section id="score" className="scroll-mt-20 py-16 bg-white">
         <Container>
           <div className="grid items-start gap-16 lg:grid-cols-2">
 
             {/* Left — description */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-4">
-                The Output
+                The Report
               </p>
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl leading-tight">
                 A score your compliance team, board, and broker can act on.
@@ -276,7 +384,7 @@ export default function Home() {
                 multiple governance conversations.
               </p>
 
-              <div className="mt-8 space-y-5">
+              <div className="mt-8 space-y-4">
                 {[
                   {
                     icon: <BarChart3 className="h-5 w-5" />,
@@ -286,17 +394,17 @@ export default function Home() {
                   {
                     icon: <Scale className="h-5 w-5" />,
                     title: "FCA, PRA & ISO 42001 mapped",
-                    body: "Gaps are mapped directly to Consumer Duty, PRA SS1/23, and ISO 42001 requirements.",
+                    body: "Gaps are mapped directly to Consumer Duty, PRA SS1/23, and ISO 42001 requirements — not generic compliance advice.",
                   },
                   {
                     icon: <FileCheck className="h-5 w-5" />,
                     title: "Evidence-grade output",
-                    body: "The PDF output is structured to be shared directly with compliance, auditors, and underwriters.",
+                    body: "The report is structured to be shared directly with compliance teams, auditors, and underwriters.",
                   },
                   {
-                    icon: <TrendingUp className="h-5 w-5" />,
+                    icon: <Target className="h-5 w-5" />,
                     title: "Prioritised remediation",
-                    body: "Critical, High, and Medium actions ranked by renewal impact — not generic governance advice.",
+                    body: "Critical, High, and Medium actions ranked by renewal impact — specific to your firm's risk profile.",
                   },
                 ].map((x) => (
                   <div key={x.title} className="flex gap-4">
@@ -304,14 +412,33 @@ export default function Home() {
                       {x.icon}
                     </div>
                     <div>
-                      <p className="text-base font-semibold text-slate-900">{x.title}</p>
-                      <p className="mt-0.5 text-base text-slate-500">{x.body}</p>
+                      <p className="text-sm font-semibold text-slate-900">{x.title}</p>
+                      <p className="mt-0.5 text-sm text-slate-500">{x.body}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-10">
+              <div className="mt-8 rounded-sm border border-slate-200 bg-slate-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
+                  Output used by
+                </p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {[
+                    "Compliance leads preparing for renewal",
+                    "Risk teams evidencing AI governance",
+                    "Boards signing off AI risk appetite",
+                    "Brokers advising on PI and D&O terms",
+                  ].map((u) => (
+                    <div key={u} className="flex items-start gap-2 text-xs text-slate-600">
+                      <ChevronRight className="mt-0.5 h-3.5 w-3.5 text-blue-600 shrink-0" />
+                      {u}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8">
                 <ButtonLink href="/assessment" variant="primary">
                   Get your governance score
                   <ArrowRight className="h-4 w-4" />
@@ -321,7 +448,6 @@ export default function Home() {
 
             {/* Right — mock report */}
             <div className="rounded-sm border border-slate-200 bg-white shadow-xl overflow-hidden">
-
               {/* Report header */}
               <div className="bg-slate-900 px-6 py-5">
                 <div className="flex items-center justify-between">
@@ -338,25 +464,25 @@ export default function Home() {
                   <div className="mb-1">
                     <span className="text-slate-400 text-sm">/100</span>
                     <div className="mt-0.5 inline-flex ml-3 items-center rounded-sm bg-amber-500/20 px-2 py-0.5 text-xs font-semibold text-amber-300">
-                      Moderate Risk
+                      Medium Risk
                     </div>
                   </div>
                 </div>
-                <p className="mt-1 text-xs text-slate-400">Enhanced terms apply · Valid 60 days</p>
+                <p className="mt-1 text-xs text-slate-400">Enhanced underwriting terms apply · Valid 60 days</p>
               </div>
 
               {/* Score breakdown */}
-              <div className="px-6 pt-5 pb-2">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-4">
+              <div className="px-6 pt-5 pb-3">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
                   Score Breakdown
                 </p>
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {[
                     { label: "Governance", score: 80, color: "bg-green-500" },
-                    { label: "Model Risk", score: 65, color: "bg-amber-500" },
+                    { label: "Model Risk", score: 55, color: "bg-amber-500" },
                     { label: "Auditability", score: 70, color: "bg-amber-500" },
                     { label: "Human Oversight", score: 75, color: "bg-green-500" },
-                    { label: "Operational Monitoring", score: 68, color: "bg-amber-500" },
+                    { label: "Operational Monitoring", score: 45, color: "bg-red-500" },
                   ].map((cat) => (
                     <div key={cat.label}>
                       <div className="flex justify-between text-xs mb-1">
@@ -364,30 +490,44 @@ export default function Home() {
                         <span className="font-semibold text-slate-800">{cat.score}%</span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-slate-100">
-                        <div className={`h-1.5 rounded-full ${cat.color}`} style={{ width: `${cat.score}%` }} />
+                        <div
+                          className={`h-1.5 rounded-full ${cat.color}`}
+                          style={{ width: `${cat.score}%` }}
+                        />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Coverage */}
-              <div className="mx-6 my-4 rounded-sm border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
-                  Coverage Implications
+              {/* Top risk driver */}
+              <div className="mx-6 my-3 rounded-sm border border-red-200 bg-red-50 p-3">
+                <p className="text-xs font-bold uppercase tracking-wider text-red-700 mb-1">
+                  Top risk driver
                 </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-sm text-slate-700">
+                <p className="text-xs text-slate-700">
+                  No continuous monitoring — insurers require evidence of ongoing oversight to
+                  accept AI-related exposure.
+                </p>
+              </div>
+
+              {/* Coverage */}
+              <div className="mx-6 mb-4 rounded-sm border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                  Coverage implications
+                </p>
+                <ul className="space-y-1.5">
+                  <li className="flex items-start gap-2 text-xs text-slate-700">
                     <CheckCircle2 className="h-3.5 w-3.5 text-green-600 mt-0.5 shrink-0" />
                     Eligible for PI coverage — enhanced underwriting applies
                   </li>
-                  <li className="flex items-start gap-2 text-sm text-slate-700">
+                  <li className="flex items-start gap-2 text-xs text-slate-700">
                     <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
                     Exclusion: Autonomous decisions without documented oversight
                   </li>
-                  <li className="flex items-start gap-2 text-sm text-slate-700">
+                  <li className="flex items-start gap-2 text-xs text-slate-700">
                     <AlertTriangle className="h-3.5 w-3.5 text-amber-500 mt-0.5 shrink-0" />
-                    Enhanced underwriting required for credit decisioning models
+                    Sub-limit: Credit decisioning models require additional evidence
                   </li>
                 </ul>
               </div>
@@ -401,7 +541,7 @@ export default function Home() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <p className="mt-2 text-center text-xs text-slate-400">
-                  Takes 10 minutes · Downloadable PDF output
+                  Takes 10 minutes · Downloadable evidence pack
                 </p>
               </div>
             </div>
@@ -410,10 +550,12 @@ export default function Home() {
       </section>
 
       {/* ── Industries ────────────────────────────────────────────── */}
-      <section id="industries" className="scroll-mt-20 py-14 bg-slate-50 border-y border-slate-200">
+      <section id="industries" className="scroll-mt-20 py-16 bg-slate-50 border-y border-slate-200">
         <Container>
-          <div className="text-center mb-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">Industries</p>
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-widest text-blue-700 mb-3">
+              Industries
+            </p>
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
               Built for regulated financial firms.
             </h2>
@@ -423,54 +565,90 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                icon: <Scale className="h-5 w-5" />,
+                icon: <Scale className="h-4 w-4" />,
                 title: "Credit Decisioning",
-                desc: "AI lending, affordability scoring, and automated credit decisions.",
-                risk: "Consumer Duty fair outcome accountability applies directly.",
+                desc: "AI lending, affordability scoring, and automated credit decisions for consumer or SME markets.",
+                regulation: "FCA Consumer Duty",
+                risk: "Fair outcome accountability sits with the firm — not the model vendor.",
               },
               {
-                icon: <TrendingUp className="h-5 w-5" />,
-                title: "Trading Support",
-                desc: "Algorithmic execution, market analysis, and order routing.",
-                risk: "Hallucination and model failure in execution may not be covered.",
+                icon: <TrendingUp className="h-4 w-4" />,
+                title: "Trading & Execution",
+                desc: "Algorithmic execution, market analysis, order routing, and price discovery systems.",
+                regulation: "MAR / FCA Conduct",
+                risk: "Hallucination and model failure in execution may not be covered by default.",
               },
               {
-                icon: <Eye className="h-5 w-5" />,
-                title: "Fraud Detection",
-                desc: "Transaction monitoring, AML screening, and anomaly detection.",
-                risk: "AML failures linked to AI models face increasing FCA scrutiny.",
+                icon: <Eye className="h-4 w-4" />,
+                title: "Fraud & AML",
+                desc: "Transaction monitoring, AML screening, sanctions filtering, and anomaly detection.",
+                regulation: "FCA / JMLSG",
+                risk: "AML failures linked to AI models face increasing regulatory scrutiny.",
               },
               {
-                icon: <Lock className="h-5 w-5" />,
-                title: "Underwriting",
-                desc: "AI-assisted insurance pricing, risk classification, and referral.",
-                risk: "Model explainability is now an active underwriting criterion.",
+                icon: <Lock className="h-4 w-4" />,
+                title: "Insurance Underwriting",
+                desc: "AI-assisted pricing, risk classification, referral routing, and claims decision support.",
+                regulation: "PRA / FCA ICOBS",
+                risk: "Model explainability and oversight are now active underwriting criteria.",
+              },
+              {
+                icon: <BarChart3 className="h-4 w-4" />,
+                title: "Wealth & Advice",
+                desc: "Suitability assessment, portfolio construction, and AI-assisted financial planning tools.",
+                regulation: "MiFID II / Consumer Duty",
+                risk: "Suitability obligations apply when AI influences investment recommendations.",
+              },
+              {
+                icon: <Shield className="h-4 w-4" />,
+                title: "Compliance & RegTech",
+                desc: "Regulatory reporting, monitoring automation, and AI used within the compliance function.",
+                regulation: "Multiple — FCA / PRA",
+                risk: "AI errors in compliance functions can directly trigger supervisory action.",
               },
             ].map((item) => (
               <div
                 key={item.title}
-                className="flex flex-col rounded-sm border border-slate-200 bg-white p-6 hover:border-blue-300 hover:shadow-sm transition-all"
+                className="flex flex-col rounded-sm border border-slate-200 bg-white p-5 hover:border-blue-300 hover:shadow-sm transition-all"
               >
-                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-sm border border-slate-200 bg-slate-50 text-blue-700">
+                <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-sm border border-slate-200 bg-slate-50 text-blue-700">
                   {item.icon}
                 </div>
-                <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
+                <h3 className="text-sm font-bold text-slate-900">{item.title}</h3>
                 <p className="mt-1.5 text-sm text-slate-500 leading-relaxed">{item.desc}</p>
-                <div className="mt-4 pt-4 border-t border-slate-100">
-                  <p className="text-sm text-amber-700 font-medium">{item.risk}</p>
+                <div className="mt-auto pt-4 border-t border-slate-100 mt-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                      Regulation
+                    </span>
+                    <span className="rounded-sm bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+                      {item.regulation}
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-amber-700">{item.risk}</p>
                 </div>
                 <Link
                   href="/assessment"
-                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors"
+                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-blue-700 hover:text-blue-800 transition-colors"
                 >
                   Assess this use case
                   <ChevronRight className="h-3 w-3" />
                 </Link>
               </div>
             ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/assessment"
+              className="inline-flex items-center gap-2 rounded-sm bg-blue-700 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-800 transition-colors shadow-sm"
+            >
+              Start your assessment
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </Container>
       </section>
@@ -491,12 +669,21 @@ export default function Home() {
               </div>
               <div className="sm:col-span-2 grid gap-4 sm:grid-cols-3">
                 {[
-                  { title: "AI Governance", body: "Practical understanding of how AI risk is assessed and documented in regulated environments." },
-                  { title: "Model Risk", body: "Familiarity with PRA model risk management expectations and internal validation frameworks." },
-                  { title: "London Market", body: "Direct experience with insurance placement, underwriting criteria, and renewal processes." },
+                  {
+                    title: "AI Governance",
+                    body: "Practical understanding of how AI risk is assessed and documented in regulated environments.",
+                  },
+                  {
+                    title: "Model Risk",
+                    body: "Familiarity with PRA model risk management expectations and internal validation frameworks.",
+                  },
+                  {
+                    title: "London Market",
+                    body: "Direct experience with insurance placement, underwriting criteria, and renewal processes.",
+                  },
                 ].map((c) => (
                   <div key={c.title} className="border-l border-slate-200 pl-4">
-                    <p className="text-base font-semibold text-slate-900">{c.title}</p>
+                    <p className="text-sm font-semibold text-slate-900">{c.title}</p>
                     <p className="mt-1 text-xs text-slate-500 leading-relaxed">{c.body}</p>
                   </div>
                 ))}
@@ -521,10 +708,13 @@ export default function Home() {
             </div>
 
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Services</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">
+                Services
+              </p>
               <ul className="space-y-2.5 text-sm">
                 {[
                   { href: "/assessment", label: "Free Governance Assessment" },
+                  { href: "/results?demo=1", label: "Sample Report" },
                   { href: "/about", label: "About Verdictal" },
                   { href: "/#how-it-works", label: "How It Works" },
                 ].map((l) => (
@@ -538,10 +728,15 @@ export default function Home() {
             </div>
 
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Contact</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">
+                Contact
+              </p>
               <ul className="space-y-2.5 text-sm">
                 <li>
-                  <a href="mailto:hello@verdictal.ai" className="text-slate-400 hover:text-white transition-colors">
+                  <a
+                    href="mailto:hello@verdictal.ai"
+                    className="text-slate-400 hover:text-white transition-colors"
+                  >
                     hello@verdictal.ai
                   </a>
                 </li>

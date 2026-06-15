@@ -13,16 +13,19 @@ const base = { ...DEFAULT_ASSESSMENT_FORM };
 
 describe("isInsurancePurpose", () => {
   it("returns true for insurance-renewal", () => {
-    expect(isInsurancePurpose({ ...base, assessmentPurpose: "insurance-renewal" })).toBe(true);
+    expect(isInsurancePurpose({ ...base, assessmentPurpose: ["insurance-renewal"] })).toBe(true);
   });
   it("returns true for broker-review", () => {
-    expect(isInsurancePurpose({ ...base, assessmentPurpose: "broker-review" })).toBe(true);
+    expect(isInsurancePurpose({ ...base, assessmentPurpose: ["broker-review"] })).toBe(true);
   });
   it("returns true for cyber-pi-review", () => {
-    expect(isInsurancePurpose({ ...base, assessmentPurpose: "cyber-pi-review" })).toBe(true);
+    expect(isInsurancePurpose({ ...base, assessmentPurpose: ["cyber-pi-review"] })).toBe(true);
   });
-  it("returns false for internal-audit", () => {
-    expect(isInsurancePurpose({ ...base, assessmentPurpose: "internal-audit" })).toBe(false);
+  it("returns true when array contains an insurance purpose among others", () => {
+    expect(isInsurancePurpose({ ...base, assessmentPurpose: ["internal-audit", "broker-review"] })).toBe(true);
+  });
+  it("returns false for internal-audit only", () => {
+    expect(isInsurancePurpose({ ...base, assessmentPurpose: ["internal-audit"] })).toBe(false);
   });
   it("returns false when undefined", () => {
     expect(isInsurancePurpose({ ...base, assessmentPurpose: undefined })).toBe(false);

@@ -23,11 +23,11 @@ export function Label({ children, required }: { children: React.ReactNode; requi
 }
 
 export function Hint({ children }: { children: React.ReactNode }) {
-  return <p className="mb-2 text-sm text-slate-400">{children}</p>;
+  return <p className="mb-2 text-sm text-slate-500">{children}</p>;
 }
 
 const fieldBase =
-  "w-full rounded-sm border px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 transition-colors";
+  "w-full rounded-sm border px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-1 transition-colors";
 const fieldNormal =
   "border-slate-300 bg-white focus:border-blue-700 focus:ring-blue-700";
 const fieldError =

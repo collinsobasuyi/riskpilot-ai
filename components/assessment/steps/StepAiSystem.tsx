@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Building, FileText, Database } from "lucide-react";
+import { Building, FileText, Database, CheckCircle2 } from "lucide-react";
 import {
   AssessmentFormData,
   AssessmentErrors,
@@ -13,7 +13,6 @@ import {
   Textarea,
   Hint,
   Label,
-  CheckboxGroup,
   RadioGroup,
 } from "../FieldPrimitives";
 import { SectionTitle } from "../SectionTitle";
@@ -31,6 +30,43 @@ const PURPOSE_OPTIONS: { value: AssessmentPurpose; label: string }[] = [
   { value: "other", label: "Other" },
 ];
 
+const AI_CAPABILITIES: { value: string; desc: string }[] = [
+  { value: "Classification", desc: "Group or label records based on patterns" },
+  { value: "Regression / prediction", desc: "Estimate an outcome, score, or future value" },
+  { value: "Generative / LLM", desc: "Generate text, summaries, or recommendations" },
+  { value: "Recommendation", desc: "Suggest actions or content to users" },
+  { value: "Computer vision", desc: "Analyse images, video, or documents" },
+  { value: "NLP / text analysis", desc: "Extract meaning or sentiment from text" },
+  { value: "Anomaly detection", desc: "Identify unusual patterns or outliers" },
+];
+
+function SectionProgress({ data }: { data: AssessmentFormData }) {
+  const orgComplete = !!data.companyName.trim() && !!data.industry;
+  const aiComplete = !!data.systemName.trim() && !!data.aiUseCase.trim();
+  const modelComplete = !!data.foundationModelSource || data.dataSensitivity !== "none";
+
+  return (
+    <div className="mb-6 flex flex-wrap gap-4 rounded-sm border border-slate-100 bg-slate-50 px-4 py-3">
+      {[
+        { label: "Organisation", done: orgComplete },
+        { label: "AI System", done: aiComplete },
+        { label: "Model & Data", done: modelComplete },
+      ].map((s) => (
+        <div key={s.label} className="flex items-center gap-1.5 text-xs">
+          {s.done ? (
+            <CheckCircle2 className="h-3.5 w-3.5 text-green-500 shrink-0" />
+          ) : (
+            <span className="h-3.5 w-3.5 rounded-full border-2 border-slate-300 shrink-0" />
+          )}
+          <span className={s.done ? "font-medium text-slate-700" : "text-slate-400"}>
+            {s.label}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function StepAiSystem({
   data,
   errors,
@@ -46,20 +82,18 @@ export function StepAiSystem({
   ) => void;
   onArrayChange: (name: string, value: string) => void;
 }) {
-  function setPurpose(value: AssessmentPurpose) {
-    onChange({
-      target: { name: "assessmentPurpose", value, type: "select-one" },
-    } as React.ChangeEvent<HTMLSelectElement>);
-  }
+  const selectedPurposes = data.assessmentPurpose ?? [];
 
   return (
     <div className="space-y-8">
+      <SectionProgress data={data} />
+
       {/* Organisation */}
       <div className="rounded-sm border border-slate-200 bg-white p-6">
         <SectionTitle
           icon={<Building className="h-4 w-4" />}
           title="Organisation"
-          subtitle="Tell us about the firm undertaking this assessment."
+          subtitle="Determines applicable regulatory, insurance, and benchmark context for your assessment."
         />
         <div className="space-y-5">
           <div>
@@ -129,22 +163,26 @@ export function StepAiSystem({
           )}
           <div>
             <Label>Assessment purpose</Label>
-            <Hint>Select the primary reason for this assessment — personalises the questions shown.</Hint>
+            <Hint>Select all that apply — personalises the questions shown.</Hint>
             <div className="flex flex-wrap gap-2 mt-1">
-              {PURPOSE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  onClick={() => setPurpose(opt.value)}
-                  className={`rounded-sm border px-3 py-1.5 text-sm font-medium transition-colors ${
-                    data.assessmentPurpose === opt.value
-                      ? "border-blue-600 bg-blue-50 text-blue-700"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-blue-300"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
+              {PURPOSE_OPTIONS.map((opt) => {
+                const selected = selectedPurposes.includes(opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => onArrayChange("assessmentPurpose", opt.value)}
+                    className={`rounded-sm border px-3 py-1.5 text-sm font-medium transition-colors ${
+                      selected
+                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-blue-400 hover:text-blue-600"
+                    }`}
+                  >
+                    {selected && <span className="mr-1.5">✓</span>}
+                    {opt.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -155,7 +193,7 @@ export function StepAiSystem({
         <SectionTitle
           icon={<FileText className="h-4 w-4" />}
           title="AI System"
-          subtitle="Describe the specific AI system being assessed."
+          subtitle="Identifies customer impact, decision risk, and operating context — the core risk signals."
         />
         <div className="space-y-5">
           <div>
@@ -219,12 +257,32 @@ export function StepAiSystem({
           </div>
           <div>
             <Label>AI capabilities (select all that apply)</Label>
-            <CheckboxGroup
-              name="aiCapabilities"
-              options={["Classification", "Regression / prediction", "Generative / LLM", "Recommendation", "Computer vision", "NLP / text analysis", "Anomaly detection"]}
-              selected={data.aiCapabilities ?? []}
-              onChange={(val) => onArrayChange("aiCapabilities", val)}
-            />
+            <div className="grid gap-2 sm:grid-cols-2">
+              {AI_CAPABILITIES.map((cap) => {
+                const checked = (data.aiCapabilities ?? []).includes(cap.value);
+                return (
+                  <label
+                    key={cap.value}
+                    className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 transition-colors ${
+                      checked
+                        ? "border-blue-600 bg-blue-50"
+                        : "border-slate-200 bg-white hover:border-blue-300"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => onArrayChange("aiCapabilities", cap.value)}
+                      className="mt-0.5 accent-blue-700 shrink-0"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">{cap.value}</p>
+                      <p className="text-xs text-slate-500 leading-relaxed">{cap.desc}</p>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -234,7 +292,7 @@ export function StepAiSystem({
         <SectionTitle
           icon={<Database className="h-4 w-4" />}
           title="Model, Data & Vendors"
-          subtitle="Foundation model source, hosting, data profile, and any vendor dependencies."
+          subtitle="Assesses model risk, data protection exposure, vendor dependency, and evidence requirements."
         />
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">

@@ -84,6 +84,7 @@ export default function AssessmentPage() {
   const liveReady = step > 0 || formData.companyName.trim().length > 0;
 
   const multiFields: Record<string, string[]> = {
+    assessmentPurpose: [],
     aiCapabilities: [],
     biasTesting: ["No testing conducted", "Unsure"],
     modelDocs: ["None"],
@@ -266,7 +267,7 @@ export default function AssessmentPage() {
             </div>
 
             {/* Desktop sidebar (hidden on mobile) */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:block sticky top-8 self-start">
               <LiveSidebar data={formData} ready={liveReady} />
             </div>
 
