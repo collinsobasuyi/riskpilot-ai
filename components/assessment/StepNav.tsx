@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Save } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText } from "lucide-react";
 
 export function StepNav({
   step,
@@ -41,8 +41,8 @@ export function StepNav({
           disabled={submitting}
           className="inline-flex items-center gap-1.5 rounded-sm bg-blue-700 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60 transition-colors"
         >
-          <Save className="h-4 w-4" />
-          {submitting ? "Submitting…" : "Submit Assessment"}
+          <FileText className="h-4 w-4" />
+          {submitting ? "Generating…" : "Generate Report"}
         </button>
       )}
     </div>
